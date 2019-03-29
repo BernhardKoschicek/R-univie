@@ -1,48 +1,48 @@
 Date;BCE/CE;Settlement;Size;Points;Alignment
 -8000;BCE;Mureybet              ;perhaps 500;NA;western
--7000;BCE;Beidha, Basta, catalhoyiik;1,000;0.01;western
--6000;BCE;catalhoyilk               ;3,000;0.03;western
--5000;BCE;Tell Brak                 ;4,000;0.04;western
--4000;BCE;Uruk, Tell Brak           ;5,000;0.05;western
--3500;BCE;Uruk, Susa, Tell Brak     ;8,000;0.09;western
--3000;BCE;Uruk                     ;45,000;0.42;western
--2500;BCE;Uruk                     ;50,000;0.47;western
--2250;BCE;Akkad, Memphis           ;35,000;0.33;western
--2000;BCE;Memphis, Ur              ;60,000;0.56;western
--1750;BCE;Babylon                  ;65,000;0.61;western
--1500;BCE;Uruk, Thebes             ;75,000;0.7;western
--1400;BCE;Thebes                   ;80,000;0.75;western
--1300;BCE;Thebes                   ;80,000;0.75;western
--1200;BCE;Babylon, Thebes          ;80,000;0.75;western
--1100;BCE;Memphis, Thebes, Tanis   ;50,000;0.47;western
--1000;BCE;Thebes                   ;50,000;0.47;western
--900;BCE;Thebes                   ;50,000;0.47;western
--800;BCE;Nimrud/Kalhu             ;75,000;0.7;western
--700;BCE;Nineveh                  ;100,000;0.94;western
--600;BCE;Babylon                  ;125,000;1.17;western
--500;BCE;Babylon                  ;150,000;1.4;western
--400;BCE;Babylon                  ;150,000;1.4;western
--300;BCE;Babylon, Alexandria      ;150,000;1.4;western
--200;BCE;Alexandria               ;300,000;2.81;western
--100;BCE;Alexandria, perhaps Rome ;400,000;3.75;western
-1;BCE/CE;Rome                    ;1,000,000;9.36;western
-100;CE;Rome                    ;1,000,000;9.36;western
-200;CE;Rome                    ;1,000,000;9.36;western
-300;CE;Rome                     ;800,000;7.49;western
-400;CE;Rome                     ;800,000;7.49;western
-500;CE;Constantinople           ;450,000;4.23;western
-600;CE;Constantinople           ;150,000;1.41;western
-700;CE;Constantinople           ;125,000;1.17;western
-800;CE;Baghdad                  ;175,000;1.64;western
-900;CE;Cordoba                 ;175,000;1.64;western
-1000;CE;Cordoba                       ;200,000;1.87;western
-1100;CE;Constantinople                ;250,000;2.34;western
-1200;CE;Baghdad, Cairo, Constantinople;250,000;2.34;western
-1300;CE;Cairo                         ;400,000;3.75;western
-1400;CE;Cairo                         ;125,000;1.17;western
-1500;CE;Cairo                         ;400,000;3.75;western
-1600;CE;Constantinople                ;400,000;3.75;western
-1700;CE;London and Constantinople     ;600,000;5.62;western
-1800;CE;London                        ;900,000;8.43;western
-1900;CE;London                      ;6,600,000;61.8;western
-2000;CE;New York                   ;16,700,000;156.37;western
+-7000;BCE;Beidha, Basta, catalhoyiik;1000;0.01;western
+-6000;BCE;catalhoyilk               ;3000;0.03;western
+-5000;BCE;Tell Brak                 ;4000;0.04;western
+-4000;BCE;Uruk, Tell Brak           ;5000;0.05;western
+-3500;BCE;Uruk, Susa, Tell Brak     ;8000;0.09;western
+-3000;BCE;Uruk                     ;45000;0.42;western
+-2500;BCE;Uruk                     ;50000;0.47;western
+-2250;BCE;Akkad, Memphis           ;35000;0.33;western
+-2000;BCE;Memphis, Ur              ;60000;0.56;western
+-1750;BCE;Babylon                  ;65000;0.61;western
+-1500;BCE;Uruk, Thebes             ;75000;0.7;western
+-1400;BCE;Thebes                   ;80000;0.75;western
+-1300;BCE;Thebes                   ;80000;0.75;western
+-1200;BCE;Babylon, Thebes          ;80000;0.75;western
+-1100;BCE;Memphis, Thebes, Tanis   ;50000;0.47;western
+-1000;BCE;Thebes                   ;50000;0.47;western
+-900;BCE;Thebes                   ;50000;0.47;western
+-800;BCE;Nimrud/Kalhu             ;75000;0.7;western
+-700;BCE;Nineveh                  ;100000;0.94;western
+-600;BCE;Babylon                  ;125000;1.17;western
+-500;BCE;Babylon                  ;150000;1.4;western
+-400;BCE;Babylon                  ;150000;1.4;western
+-300;BCE;Babylon, Alexandria      ;150000;1.4;western
+-200;BCE;Alexandria               ;300000;2.81;western
+-100;BCE;Alexandria, perhaps Rome ;400000;3.75;western
+1;BCE/CE;Rome                    ;1000000;9.36;western
+100;CE;Rome                    ;1000000;9.36;western
+200;CE;Rome                    ;1000000;9.36;western
+300;CE;Rome                     ;800000;7.49;western
+400;CE;Rome                     ;800000;7.49;western
+500;CE;Constantinople           ;450000;4.23;western
+600;CE;Constantinople           ;150000;1.41;western
+700;CE;Constantinople           ;125000;1.17;western
+800;CE;Baghdad                  ;175000;1.64;western
+900;CE;Cordoba                 ;175000;1.64;western
+1000;CE;Cordoba                       ;200000;1.87;western
+1100;CE;Constantinople                ;250000;2.34;western
+1200;CE;Baghdad, Cairo, Constantinople;250000;2.34;western
+1300;CE;Cairo                         ;400000;3.75;western
+1400;CE;Cairo                         ;125000;1.17;western
+1500;CE;Cairo                         ;400000;3.75;western
+1600;CE;Constantinople                ;400000;3.75;western
+1700;CE;London and Constantinople     ;600000;5.62;western
+1800;CE;London                        ;900000;8.43;western
+1900;CE;London                      ;6600000;61.8;western
+2000;CE;New York                   ;16700000;156.37;western
