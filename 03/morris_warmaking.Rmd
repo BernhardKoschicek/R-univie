@@ -1,6 +1,10 @@
 ---
 title: ""
 output:
+  pdf_document: default
+  df_print: paged
+  html_document:
+  word_document: default
 author: Bernhard Koschicek
 ---
 # War-making capacity 
@@ -34,7 +38,7 @@ west = morris_warmaking$West >  morris_warmaking$East
 east = morris_warmaking$West <  morris_warmaking$East
 equal = morris_warmaking$West ==  morris_warmaking$East
 
-# Determine who was "better". 
+# Determine who was "better". I squeezed my brain for a better and fancy solution, but hours of thinking were pointless, so here is the simply not beautyful solution, I'm sorry. 
 
 x = data.frame("date" = morris_warmaking$Date, "West_better" = west, "East_better" = east,  "Equal" = equal)
 x
@@ -46,7 +50,7 @@ x
 
 > Fix the dataset so that it confirms to the principles of tidy data. What should be corrected?
 
-* Get the whole thing in a table format with RegEx: ^(\W?\d+)\W(\S+)\s+([^\d]+)([^\s]+)\s+(.+)
+* Get the whole thing in a table format with RegEx: `^(\W?\d+)\W(\S+)\s+([^\d]+)([^\s]+)\s+(.+)`
 * The comma from the size column is interprated as decimal, so it has to be changed to . or nothing. 
 * kill the author because he wrote "perhaps 500" in the western table for Mareybet and didn't asign a value for the points. In this case I just added the value NA to the table by myself and wrote the "perhaps" manually to the size, because I didn't want to change my regex just for a single entry
 * One problem could be the 4 date of the western table because there the author starts with 8000 BCE. I would just ignore this and hope that the plot will to the right thing here and just start the eastern values at 4000 BCE 
@@ -60,10 +64,8 @@ There are as always more ways to do this. I would clearly add another column wit
 
 ```{r} 
 eastern <- read.csv("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/03/settlements/morris_settlement_eastern.csv", sep=";")
-head(eastern)
 western <- read.csv("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/03/settlements/morris_settlement_western.csv", sep=";")
-head(western)
-date = western$Date
+dates = western$Date
 west_set = western$Settlement
 west_size = western$Size
 west_point = western$Points
@@ -73,24 +75,54 @@ east_size = eastern$Size
 east_point = eastern$Points
 
 # Plot for the Population Size
-plot(date, east_size, type="o", col="brown", axes=FALSE, ann=FALSE, ylim=c(0,1000000))
-axis(1, at=date, lab=date)
+plot(dates, east_size, type="o", col="brown", axes=FALSE, ann=FALSE, ylim=c(0,1000000))
+axis(1, at=dates, lab=dates)
 axis(2, at=east_size, las=1, tck=-0.05, cex.axis=0.7)
 box()
 ## Add line
-lines(date, west_size, type="o", pch=11, col="violet")
+lines(dates, west_size, type="o", pch=11, col="violet")
 ## Labeling
 title(main="Population Size", col.main="black", font.main=3)
 title(xlab="Date", col.lab=rgb(0,0.5,0))
 title(ylab="Size", col.lab=rgb(0,0.5,0))
 ## Legend
-legend(-8000, y= 31, c("east","west"), cex=0.8, col=c("brown","violet"), pch=21:11, lty=1:2)
+legend(-8000, y= 1000000, c("east","west"), cex=0.8, col=c("brown","violet"), pch=21:11, lty=1:2)
+
 
 # Plot for the Warmaking Points
-plot(date, east_point, type="o", col="brown", axes=FALSE, ann=FALSE, ylim=c(0,10))
-axis(1, at=date, lab=date)
+plot(dates, east_point, type="o", col="brown", axes=FALSE, ann=FALSE, ylim=c(0,10))
+axis(1, at=dates, lab=dates)
 axis(2, at=east_point, las=1, tck=-0.05, cex.axis=0.7)
 box()
 ## Add line
-lines(date, west_point, type="o", pch=11, col="violet")
+lines(dates, west_point, type="o", pch=11, col="violet")
+## Labeling
+title(main="Warmaking Points", col.main="black", font.main=3)
+title(xlab="Date", col.lab=rgb(0,0.5,0))
+title(ylab="Points", col.lab=rgb(0,0.5,0))
+## Legend
+legend(-8000, y= 10, c("east","west"), cex=0.8, col=c("brown","violet"), pch=21:11, lty=1:2)
+
+# Who was better?
+west = west_point >  east_point
+east = west_point <  east_point
+equal = west_point == east_point
+
+
+better_whole = data.frame("dates_lead" = dates, "West_better" = west, "East_better" = east,  "Equal" = equal, "Western_Cities" = west_set, "Eastern_Cities" = east_set)
+
+# I think this is not a nice solution but I cannot make a valid if statement in a for each with data frames... this is frustrating... 
+
+west_lead = subset(data.frame("dates_lead" = dates, "West_better" = west,    "Western_Cities" = west_set),  West_better == TRUE)
+west_lead
+east_lead = subset(data.frame("dates_lead" = dates, "East_better" = east,    "Eastern_Cities" = east_set),  East_better == TRUE)
+east_lead
+
+library("plyr")
+
+total_lead = rbind.fill(west_lead, east_lead)
+attach(total_lead)
+newdata = total_lead[order(dates_lead),]
+detach(total_lead)
+newdata
 ```
