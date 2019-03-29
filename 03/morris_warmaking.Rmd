@@ -1,8 +1,6 @@
 ---
 title: ""
 output:
-  html_document:Experiment with War Data
-    df_print: paged
 author: Bernhard Koschicek
 ---
 # War-making capacity 
@@ -23,7 +21,7 @@ axis(1, at=date, lab=date)
 axis(2, at=east, las=1, tck=-0.05, cex.axis=0.7)
 box()
 #Add line
-lines(date, west, type="o", pch=22, lty=6, col="violet")
+lines(date, west, type="o", pch=11, lty=6, col="violet")
 #labeling
 title(main="War Data", col.main="green", font.main=3)
 title(xlab="Date", col.lab=rgb(0,0.5,0))
@@ -32,6 +30,16 @@ title(ylab="War Readiness", col.lab=rgb(0,0.5,0))
 legend(-4000, y= 0.3, c("east","west"), cex=0.8, col=c("brown","violet"), pch=21:22, lty=1:2)
 #PDF output
 #dev.off()
+west = morris_warmaking$West >  morris_warmaking$East
+east = morris_warmaking$West <  morris_warmaking$East
+equal = morris_warmaking$West ==  morris_warmaking$East
+
+# Determine who was "better". 
+
+x = data.frame("date" = morris_warmaking$Date, "West_better" = west, "East_better" = east,  "Equal" = equal)
+x
+
+
 ```
 
 # Maximum Settlement Sizes 
@@ -42,6 +50,8 @@ legend(-4000, y= 0.3, c("east","west"), cex=0.8, col=c("brown","violet"), pch=21
 * The comma from the size column is interprated as decimal, so it has to be changed to . or nothing. 
 * kill the author because he wrote "perhaps 500" in the western table for Mareybet and didn't asign a value for the points. In this case I just added the value NA to the table by myself and wrote the "perhaps" manually to the size, because I didn't want to change my regex just for a single entry
 * One problem could be the 4 date of the western table because there the author starts with 8000 BCE. I would just ignore this and hope that the plot will to the right thing here and just start the eastern values at 4000 BCE 
+* Commas are not supported in plot, therefore we have to change it and delete them
+* Sometime there are inconsistencies like in the settlements column one time the author wrote ´London and Constantinople´ 
 
 >The datasets for the East and the West are separate. What would be your strategies to combine them?
 
@@ -49,9 +59,38 @@ There are as always more ways to do this. I would clearly add another column wit
 
 
 ```{r} 
-eastern <- read.csv2("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/03/morris_settlement.csv")
-head(morris_settlement)
-western <- read.csv("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/03/morris_settlement_wester.csv", sep=";")
-head(morris_settlement_wester)
+eastern <- read.csv("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/03/settlements/morris_settlement_eastern.csv", sep=";")
+head(eastern)
+western <- read.csv("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/03/settlements/morris_settlement_western.csv", sep=";")
+head(western)
+date = western$Date
+west_set = western$Settlement
+west_size = western$Size
+west_point = western$Points
 
+east_set = eastern$Settlement
+east_size = eastern$Size
+east_point = eastern$Points
+
+# Plot for the Population Size
+plot(date, east_size, type="o", col="brown", axes=FALSE, ann=FALSE, ylim=c(0,1000000))
+axis(1, at=date, lab=date)
+axis(2, at=east_size, las=1, tck=-0.05, cex.axis=0.7)
+box()
+## Add line
+lines(date, west_size, type="o", pch=11, col="violet")
+## Labeling
+title(main="Population Size", col.main="black", font.main=3)
+title(xlab="Date", col.lab=rgb(0,0.5,0))
+title(ylab="Size", col.lab=rgb(0,0.5,0))
+## Legend
+legend(-8000, y= 31, c("east","west"), cex=0.8, col=c("brown","violet"), pch=21:11, lty=1:2)
+
+# Plot for the Warmaking Points
+plot(date, east_point, type="o", col="brown", axes=FALSE, ann=FALSE, ylim=c(0,10))
+axis(1, at=date, lab=date)
+axis(2, at=east_point, las=1, tck=-0.05, cex.axis=0.7)
+box()
+## Add line
+lines(date, west_point, type="o", pch=11, col="violet")
 ```

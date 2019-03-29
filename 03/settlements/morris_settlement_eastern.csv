@@ -1,44 +1,44 @@
 Date;BCE/CE;Settlement;Size;Points;Alignment
 -4000;BCE;Jiangzhai, Jiahu                 ;300;0;eastern
--3500;BCE;Xipo                            ;2,000;0.02;eastern
--3000;BCE;Dadiwan                         ;5,000;0.05;eastern
--2500;BCE;Taosi, Liangchengzhen, Yaowangcheng         ;10,000;0.09;eastern
--2250;BCE;Taosi, Liangchengzhen, Yaowangcheng         ;14,000;0.13;eastern
--2000;BCE;Fengcheng-Nanshui              ;11,000;0.1;eastern
--1750;BCE;Erlitou                        ;24,000;0.22;eastern
--1500;BCE;Zhengzhou                      ;35,000;0.33;eastern
--1400;BCE;Zhengzhou                      ;35,000;0.33;eastern
--1300;BCE;Zhengzhou                      ;35,000;0.33;eastern
--1200;BCE;Anyang                         ;50,000;0.47;eastern
--1100;BCE;Anyang                         ;50,000;0.47;eastern
--1000;BCE;Luoyi, Feng                    ;35,000;0.33;eastern
--900;BCE;Luoyi, Feng                    ;40,000;0.37;eastern
--800;BCE;Luoyi, Feng                    ;45,000;0.42;eastern
--700;BCE;Linzi, Luoyi                   ;55,000;0.51;eastern
--600;BCE;Linzi, Luoyi                   ;65,000;0.61;eastern
--500;BCE;Linzi                          ;80,000;0.75;eastern
--400;BCE;Linzi, Qufu, Luoyi, Xinzheng, Wuyang ;100,000;0.94;eastern
--300;BCE;Linzi, Qufu, Luoyi, Xinzheng, Wuyang ;125,000;1.17;eastern
--200;BCE;Chang'an                      ;250,000;2.81;eastern
--100;BCE;Chang'an                      ;375,000;3.75;eastern
-1;BCE/CE;Chang'an                      ;500,000;4.68;eastern
-100;CE;Luoyang                       ;420,000;3.93;eastern
-200;CE;Chang'an                      ;120,000;1.12;eastern
-300;CE;Pingyang, Chang'an, Luoyang, Xuchang, Ye  ;140,000;1.31;eastern
-400;CE;Pingcheng                     ;200,000;1.87;eastern
-500;CE;Luoyang                       ;200,000;1.87;eastern
-600;CE;Daxingcheng/Chang'an          ;600,000;5.63;eastern
-700;CE;Chang'an                     ;1,000,000;9.36;eastern
-800;CE;Chang'an                     ;1,000,000;9.36;eastern
-900;CE;Changan                 ;750,000;7;eastern
-1000;CE;Kaifeng                ;1,000,000;9.36;eastern
-1100;CE;Kaifeng                ;1,000,000;9.36;eastern
-1200;CE;Hangzhou               ;1,000,000;9.36;eastern
-1300;CE;Hangzhou                ;800,000;7.5;eastern
-1400;CE;Nanjing                 ;500,000;4.68;eastern
-1500;CE;Beijing                 ;678,000;6.35;eastern
-1600;CE;Beijing                 ;700,000;6.55;eastern
-1700;CE;Beijing                 ;650,000;6.09;eastern
-1800;CE;Beijing                ;1,100,000;10.3;eastern
-1900;CE;Tokyo                  ;1,750,000;16.39;eastern
-2000;CE;Tokyo                  ;26,400,000;250;eastern
+-3500;BCE;Xipo                            ;2000;0.02;eastern
+-3000;BCE;Dadiwan                         ;5000;0.05;eastern
+-2500;BCE;Taosi, Liangchengzhen, Yaowangcheng         ;10000;0.09;eastern
+-2250;BCE;Taosi, Liangchengzhen, Yaowangcheng         ;14000;0.13;eastern
+-2000;BCE;Fengcheng,Nanshui              ;11000;0.1;eastern
+-1750;BCE;Erlitou                        ;24000;0.22;eastern
+-1500;BCE;Zhengzhou                      ;35000;0.33;eastern
+-1400;BCE;Zhengzhou                      ;35000;0.33;eastern
+-1300;BCE;Zhengzhou                      ;35000;0.33;eastern
+-1200;BCE;Anyang                         ;50000;0.47;eastern
+-1100;BCE;Anyang                         ;50000;0.47;eastern
+-1000;BCE;Luoyi, Feng                    ;35000;0.33;eastern
+-900;BCE;Luoyi, Feng                    ;40000;0.37;eastern
+-800;BCE;Luoyi, Feng                    ;45000;0.42;eastern
+-700;BCE;Linzi, Luoyi                   ;55000;0.51;eastern
+-600;BCE;Linzi, Luoyi                   ;65000;0.61;eastern
+-500;BCE;Linzi                          ;80000;0.75;eastern
+-400;BCE;Linzi, Qufu, Luoyi, Xinzheng, Wuyang ;100000;0.94;eastern
+-300;BCE;Linzi, Qufu, Luoyi, Xinzheng, Wuyang ;125000;1.17;eastern
+-200;BCE;Chang'an                      ;250000;2.81;eastern
+-100;BCE;Chang'an                      ;375000;3.75;eastern
+1;BCE/CE;Chang'an                      ;500000;4.68;eastern
+100;CE;Luoyang                       ;420000;3.93;eastern
+200;CE;Chang'an                      ;120000;1.12;eastern
+300;CE;Pingyang, Chang'an, Luoyang, Xuchang, Ye  ;140000;1.31;eastern
+400;CE;Pingcheng                     ;200000;1.87;eastern
+500;CE;Luoyang                       ;200000;1.87;eastern
+600;CE;Daxingcheng/Chang'an          ;600000;5.63;eastern
+700;CE;Chang'an                     ;1000000;9.36;eastern
+800;CE;Chang'an                     ;1000000;9.36;eastern
+900;CE;Changan                 ;750000;7;eastern
+1000;CE;Kaifeng                ;1000000;9.36;eastern
+1100;CE;Kaifeng                ;1000000;9.36;eastern
+1200;CE;Hangzhou               ;1000000;9.36;eastern
+1300;CE;Hangzhou                ;800000;7.5;eastern
+1400;CE;Nanjing                 ;500000;4.68;eastern
+1500;CE;Beijing                 ;678000;6.35;eastern
+1600;CE;Beijing                 ;700000;6.55;eastern
+1700;CE;Beijing                 ;650000;6.09;eastern
+1800;CE;Beijing                ;1100000;10.3;eastern
+1900;CE;Tokyo                  ;1750000;16.39;eastern
+2000;CE;Tokyo                  ;26400000;250;eastern
