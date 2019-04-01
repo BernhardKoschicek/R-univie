@@ -1,0 +1,90 @@
+---
+title: "Enrolled students at the university of Vienna"
+output:
+  pdf_document: default
+  df_print: paged
+  html_document:
+  word_document: default
+author: Bernhard Koschicek
+---
+# Sex of students enrolled at UniVie
+
+This dataset is a statistic how many women and men were enrolled at the University of Vienna between 1955 and 2018 at the _wintersemester_. The shown graphs speaks for themselfe I think. 
+
+```{r}
+studi<- read.csv("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/03/studierende/studierende.csv")
+head(studi)
+
+sem = studi$Wintersemester
+sum = studi$Zusammen
+man = studi$Maenner
+wom = studi$Frauen
+
+# Create Plot
+plot(sem, wom, type="o", col="blue", pch=21, axes=FALSE, ann=FALSE)
+
+# Name and config axis
+axis(1, at=sem, lab=sem)
+axis(2, at=wom, las=1, tck=-0.05, cex.axis=0.7)
+# Putting a box around 
+box()
+
+# Add data west
+lines(sem, man, type="o", pch=22, lty=6, col="violet")
+
+# Labeling of the axis and diagram
+title(main="Students enrolled at the UniVie speparated by sex", col.main="green", font.main=3)
+title(xlab="Semester", col.lab=rgb(0,0.5,0))
+title(ylab="Number of Students", col.lab=rgb(0,0.5,0))
+
+# Creating the legend
+legend(0, y= 140000, c("Woman","Man"), cex=0.8, col=c("blue","violet"), pch=21:22, lty=1:2)
+
+wom_higher = wom > man
+man_higher = man > wom
+
+# When were more man or woman at the UniVie enrolled
+higher = data.frame("woman" = wom_higher, "man" = man_higher)
+
+# Create Plot which sex had more enrollments
+barplot(t(higher), main="Dominated sex of enrollment from 1955 to 2018",
+   col=heat.colors(2), space=0.1, cex.axis=0.8, las=1,
+   names.arg=sem, cex=0.8)
+   
+# Add legend
+legend(6, 0.8, c("Woman", "Man"), cex=0.8, fill=heat.colors(2));
+
+
+perc = data.frame("Date" = sem, "Woman" = paste(round(wom/sum * 100, digits=2), "%", sep=""), "Man" = paste(round(man/sum * 100, digits=2), "%", sep=""))
+
+
+# Create data when which sex had more enrolled students
+perc_bar = data.frame("Woman" = round(wom/sum * 100, digits=2), "Man"=round(man/sum * 100, digits=2))
+# Create bar plot 
+barplot(t(perc_bar), main="Percentage of enrolled sex at the UniVie", col=heat.colors(2), space=0.1, cex.axis=0.8, las=1, names.arg=sem, cex=0.8)
+   
+# Add legend
+legend(6, 80, c("Woman", "Man"), cex=0.8, fill=heat.colors(2));
+   
+
+
+
+# Sum up to see in a piechart what the summarized percantage of students. 
+sum = c(sum(man_higher), sum(wom_higher))
+
+# Labeling the piechart
+pie_labels <- round(sum/sum(sum) * 100, 1)
+# Concatenate a '%' char after each value
+pie_labels <- paste(pie_labels, "%", sep="")
+# Create piechart
+pie(sum, main="63 Years of UniVie enrollment", col=rainbow(length(sum)), labels=pie_labels)
+# Add Legend
+legend(1.5, 0.5, c("Man", "Woman"), cex=0.8, fill=c("red", "turquoise") )
+
+```
+
+# Dataset
+
+```{r}
+studi
+```
