@@ -77,42 +77,42 @@ legend("top", legend=c("Early Modern"),col=c("green"), lty = 1:2, cex=0.8)
 ```
 
 ```{r}
-# years_medival_early_modern <- unique(bagdad_london_finalRestat$year)
-# 
-# library(ggplot2)
-# ggplot() +
-#   geom_line(data = aggMedieval, aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
-#   geom_line(data= aggEarlyModern, aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size= 1, color ="green") +
-#   xlab("Year") + ylab("Population") +
-#   ggtitle("Population over Time") +
-#   scale_x_continuous(breaks =round(seq(min(years_medival_early_modern), max(years_medival_early_modern), by = 100),1)) +
-# 	scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggEarlyModern$x), by =10000),1)) +
-#   scale_color_discrete(name="Period",  labels = c("Early Modern Population", "Medival Population"))
+years_medival_early_modern <- unique(bagdad_london_finalRestat$year)
+
+library(ggplot2)
+ggplot() +
+  geom_line(data = aggMedieval, aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
+  geom_line(data= aggEarlyModern, aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size= 1, color ="green") +
+  xlab("Year") + ylab("Population") +
+  ggtitle("Population over Time") +
+  scale_x_continuous(breaks =round(seq(min(years_medival_early_modern), max(years_medival_early_modern), by = 100),1)) +
+	scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggEarlyModern$x), by =10000),1)) +
+  scale_color_discrete(name="Period",  labels = c("Early Modern Population", "Medival Population"))
 ```
 
 ```{r}
-# medieval_population <- Medieval.bagdad.sub$citypop_le5
-# range_population_medieval <- range(Medieval.bagdad.sub$citypop_le5)
-# range_population_early_modern <- range(EarlyModern.bagdad.sub$citypop_le5)
-# range_years_early_modern <- range(EarlyModern.bagdad.sub$year)
-# 
-# library(ggplot2)
-# ggplot(data = aggEarlyModern, aes(x = aggEarlyModern$Category, y = aggEarlyModern$x)) +
-#   geom_line(aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size=1, color ="green") +
-#   xlab("Year") + ylab("Population") +
-#   ggtitle("Early Modern Population") +
-#  	scale_x_continuous(breaks =round(seq(min(range_years_early_modern), max(range_years_early_modern), by = 100),1)) +
-#   scale_y_continuous(breaks = round(seq(min(aggEarlyModern$x), max(aggEarlyModern$x), by = 10000),1))
+medieval_population <- Medieval.bagdad.sub$citypop_le5
+range_population_medieval <- range(Medieval.bagdad.sub$citypop_le5)
+range_population_early_modern <- range(EarlyModern.bagdad.sub$citypop_le5)
+range_years_early_modern <- range(EarlyModern.bagdad.sub$year)
+
+library(ggplot2)
+ggplot(data = aggEarlyModern, aes(x = aggEarlyModern$Category, y = aggEarlyModern$x)) +
+  geom_line(aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size=1, color ="green") +
+  xlab("Year") + ylab("Population") +
+  ggtitle("Early Modern Population") +
+ 	scale_x_continuous(breaks =round(seq(min(range_years_early_modern), max(range_years_early_modern), by = 100),1)) +
+  scale_y_continuous(breaks = round(seq(min(aggEarlyModern$x), max(aggEarlyModern$x), by = 10000),1))
 ```
 
 ```{r}
-# library(ggplot2)
-# ggplot(data = aggMedieval, aes(x = aggMedieval$Category, y = aggMedieval$x)) +
-#   geom_line(aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
-#   xlab("Year") + ylab("Population") +
-#   ggtitle("Medieval Population") +
-#   scale_x_continuous(breaks =round(seq(min(range_years_medival), max(range_years_medival), by = 100),1)) +
-#   scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggMedieval$x), by = 10000),1))
+library(ggplot2)
+ggplot(data = aggMedieval, aes(x = aggMedieval$Category, y = aggMedieval$x)) +
+  geom_line(aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
+  xlab("Year") + ylab("Population") +
+  ggtitle("Medieval Population") +
+  scale_x_continuous(breaks =round(seq(min(range_years_medival), max(range_years_medival), by = 100),1)) +
+  scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggMedieval$x), by = 10000),1))
 ```
 
 
@@ -184,5 +184,66 @@ library("tidyr")
 library("dplyr")
 
 habsburg %>% count(habsburg$year)
+```
+
+# islamdom and Christiandom
+
+```{r}
+#Largest cities of Islamdom for each reported period
+head(bagdad_london_finalRestat)
+acht<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 800)
+neun<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 900)
+t<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1000)
+teins<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1100)
+tzwei<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1200)
+tdrei<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1300)
+tvier<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1400)
+tfunf<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1500)
+tsechs<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1600)
+tsieben<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1700)
+tacht<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1800)
+#brauch ich auch nicht: Muslimcit<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$muslim == 1)
+achtmuslcit<-subset(acht, acht$muslim==1)
+max(achtmuslcit$citypop_le10)
+neunmuslcit<-subset(neun, neun$muslim==1)
+max(neunmuslcit$citypop_le10)
+tmuslcit<-subset(t, t$muslim==1)
+max(tmuslcit$citypop_le10)
+teinsmuslcit<-subset(teins, teins$muslim==1)
+max(teinsmuslcit$citypop_le10)
+tzweimuslcit<-subset(tzwei, tzwei$muslim==1)
+max(tzweimuslcit$citypop_le10)
+tdreimuslcit<-subset(tdrei, tdrei$muslim==1)
+max(tdreimuslcit$citypop_le10)
+tviermuslcit<-subset(tvier, tvier$muslim==1)
+max(tviermuslcit$citypop_le10)
+tfunfmuslcit<-subset(tfunf, tfunf$muslim==1)
+max(tfunfmuslcit$citypop_le10)
+tsechsmuslcit<-subset(tsechs, tsechs$muslim==1)
+max(tsechsmuslcit$citypop_le10)
+tsiebenmuslcit<-subset(tsieben, tsieben$muslim==1)
+max(tsiebenmuslcit$citypop_le10)
+tachtmuslcit<-subset(tacht, tacht$muslim==1)
+max(tachtmuslcit$citypop_le10)
+
+library(dplyr)
+cityacht<-filter(achtmuslcit, achtmuslcit$citypop_le10>=350)
+cityacht
+cityneun<-filter(neunmuslcit, neunmuslcit$citypop_le10>=450)
+cityneun
+citytausend<-filter(tmuslcit, tmuslcit$citypop_le10>=300)
+citytausend
+citytausendein<-filter(teinsmuslcit, teinsmuslcit$citypop_le10>=250)
+citytausendein
+citytausendzwei<-filter(tzweimuslcit, tzweimuslcit$citypop_le10>=200)
+citytausendzwei
+citytausenddrei<-filter(tdreimuslcit, tdreimuslcit$citypop_le10>=220)
+citytausenddrei
+citytausendvier<-filter(tviermuslcit, tviermuslcit$citypop_le10>=250)
+citytausendfunf<-filter(tfunfmuslcit, tfunfmuslcit$citypop_le10>=280)
+citytausendsechs<-filter(tsechsmuslcit, tsechsmuslcit$citypop_le10>=700)
+citytausendsieben<-filter(tsiebenmuslcit, tsiebenmuslcit$citypop_le10>=700)
+citytausendacht<-filter(tachtmuslcit, tachtmuslcit$citypop_le10>=500)
+citytausendacht
 ```
 
