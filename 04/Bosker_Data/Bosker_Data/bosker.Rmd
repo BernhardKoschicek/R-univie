@@ -1,0 +1,147 @@
+---
+title: "bosker"
+output:
+  html_document:
+  df_print: paged
+  pdf_document: default
+  word_document: default
+author: Bernhard Koschicek
+---
+
+```{r}
+library(foreign)
+bagdad_london_finalRestat <- read.dta("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/04/Bosker_Data/Bosker_Data/bagdad-london--finalRestat.dta")
+
+
+bagdad_london_finalRestat
+#summary(bagdad_london_finalRestat$year)
+#subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year==1800)
+
+period = subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year <= 1500)
+max(period$year)
+
+
+```
+
+# What is the chronological extent of this data?
+
+First year:
+```{r}
+min(bagdad_london_finalRestat$year)
+```
+
+Final year:
+```{r}
+max(bagdad_london_finalRestat$year)
+```
+
+Summary:
+```{r}
+summary(bagdad_london_finalRestat$year)
+```
+
+## What periods can it be divided into? How can we do that?
+
+```{r}
+Medieval.bagdad.sub <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year <= 1500)
+
+
+EarlyModern.bagdad.sub <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year > 1500)
+tail(Medieval.bagdad.sub)
+tail(EarlyModern.bagdad.sub)
+```
+
+## Can you generate a cumulative graph of population over time, divided into these periods? 
+
+```{r}
+Medieval.bagdad.sub <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year <= 1500)
+
+EarlyModern.bagdad.sub <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year > 1500)
+
+data.frame.Medieval <- data.frame("year" = Medieval.bagdad.sub$year, "country" = Medieval.bagdad.sub$country, "pop" = Medieval.bagdad.sub$total_pop_country)
+
+data.frame.EarlyModern <- data.frame("year" = EarlyModern.bagdad.sub$year, "country" = EarlyModern.bagdad.sub$country, "pop" = EarlyModern.bagdad.sub$total_pop_country)
+
+uniqueMedieval = unique(data.frame.Medieval[c("year", "country", "pop")])
+aggMedieval = aggregate(uniqueMedieval$pop, by=list(Category=uniqueMedieval$year), FUN=sum)
+
+uniqueEarlyModern = unique(data.frame.EarlyModern[c("year", "country", "pop")])
+aggEarlyModern = aggregate(uniqueEarlyModern$pop, by=list(Category=uniqueEarlyModern$year), FUN=sum)
+
+plot(x = aggMedieval$Category, y = aggMedieval$x, type = "l", col="red", ylab = "Medieval Population", xlab = "Time", main = "Medival Population over Time")
+par(new = TRUE)
+
+legend("top", legend=c("Medival"),col=c("red"), lty = 1:2, cex=0.8)
+```
+```{r}
+plot(x = aggEarlyModern$Category, y = aggEarlyModern$x, type = "l", col="green", xlab = "Early Modern Population", ylab = "Time", lty = 2, main = "Early Modern population over Time")
+par(new = TRUE)
+legend("top", legend=c("Early Modern"),col=c("green"), lty = 1:2, cex=0.8)
+```
+
+
+
+# North Africa and Europe?
+
+```{r}
+# Create Vector for Europe
+Europevector <- c("Austria", "Ireland", "Belgium", "Czech rep.", "Denmark", "Finland", "France", "Germany", "Hungary", "Italy", "Netherlands", "Norway", "Poland", "Portugal", "Slovakia", "Spain", "Sweden", "UK", "Switzerland", "Greece", "Turkey", "Yugoslavia", "Albania", "Bulgaria", "Rumenia", "Luxemburg", "Malta")
+
+# Create Vector for Afrika 
+NorthAfricavector <- c("Morocco", "Tunesia", "Lybia", "Egypt", "Syria")
+
+# Create the Europe Data Frame
+Europe.bagdad <- bagdad_london_finalRestat$country %in% Europevector
+
+europe <- bagdad_london_finalRestat[bagdad_london_finalRestat$country %in% Europevector, ]
+
+europe.frame = data.frame("year" = europe$year, "country" = europe$country, "pop" = europe$total_pop_country)
+uniqueEurope = unique(europe.frame[c("year", "country", "pop")])
+aggEurope = aggregate(uniqueEurope$pop, by=list(Year=uniqueEurope$year), FUN=sum)
+aggEurope
+
+# Create the North Afrika Data Frame
+
+NorthAfrica.bagdad <- bagdad_london_finalRestat$country %in% NorthAfricavector
+
+northAfrica<- bagdad_london_finalRestat[bagdad_london_finalRestat$country %in% NorthAfricavector, ]
+
+africa.frame = data.frame("year" = northAfrica$year, "country" = northAfrica$country, "pop" = northAfrica$total_pop_country)
+uniqueAfrica = unique(africa.frame[c("year", "country", "pop")])
+aggAfrica = aggregate(uniqueAfrica$pop, by=list(Year=uniqueAfrica$year), FUN=sum)
+aggAfrica
+
+# Plot the whole thing 
+
+plot(x = aggAfrica$Year, y = aggAfrica$x, type = "l", col="red", ylab = "Population per country", xlab = "Time", main = "Comparative graph of Europe's and North Africa's population")
+par(new = TRUE)
+
+plot(x = aggEurope$Year, y = aggEurope$x, type = "l", col="green", axes = FALSE, xlab = " ", ylab = " ", lty = 2)
+
+legend("top", legend=c("North Africa", "Europe"),col=c("red", "green"), lty = 1:2, cex=0.8)
+
+
+northAfrica %>% count(northAfrica$year)
+northAfrica
+```
+
+
+
+
+# Austro Hungarian Empire
+
+```{r}
+
+habsburg <- bagdad_london_finalRestat[bagdad_london_finalRestat$year>=1500, c('city', 'country', 'year')]
+exclude_countries <- c("Belgium", "Denmark", "Finland", "France", "Ireland", "Netherlands", "Norway", "Poland", "Portugal", "Spain", "Sweden", "UK", "Switzerland", "Greece", "Turkey", "Lebanon", "Israel", "Syria", "Iraq", "Egypt", "Lybia", "Tunesia", "Algeria", "Morocco", "Yemen", "Saudi Arabia","Oman", "Cyprus", "Luxemburg", "Malta", "Bulgaria")
+
+habsburg <- habsburg[!(habsburg$country %in% exclude_countries), ]
+
+habsburg
+library("plyr")
+library("tidyr")
+library("dplyr")
+
+habsburg %>% count(habsburg$year)
+```
+
