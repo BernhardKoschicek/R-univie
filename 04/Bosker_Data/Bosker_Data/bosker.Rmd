@@ -7,81 +7,121 @@ output:
   word_document: default
 author: Bernhard Koschicek
 ---
+# Bosker Dataset 
 
+## Loading of the Dataset
 ```{r}
 library(foreign)
 bagdad_london_finalRestat <- read.dta("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/04/Bosker_Data/Bosker_Data/bagdad-london--finalRestat.dta")
-
-
 bagdad_london_finalRestat
 #summary(bagdad_london_finalRestat$year)
 #subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year==1800)
-
-period = subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year <= 1500)
-max(period$year)
-
-
 ```
 
-# What is the chronological extent of this data?
+## What is the chronological extent of this data?
 
-First year:
+Chronological Begin:
 ```{r}
 min(bagdad_london_finalRestat$year)
 ```
 
-Final year:
+Chronological End:
 ```{r}
 max(bagdad_london_finalRestat$year)
 ```
 
-Summary:
+Summary: (Just for fun)
 ```{r}
 summary(bagdad_london_finalRestat$year)
 ```
 
 ## What periods can it be divided into? How can we do that?
+Well there are many humanists ways to seperate the data. Here it will just be divided in Medieval and Early Modern Era. We/I decided that it will be the best to split it at 1500, and 1500 is still medieval. 
 
 ```{r}
-Medieval.bagdad.sub <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year <= 1500)
+MedievalPeriod <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year <= 1500)
+EarlyModernPeriod <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year > 1500)
+head(MedievalPeriod)
+tail(MedievalPeriod)
+head(EarlyModernPeriod)
+tail(EarlyModernPeriod)
 
-
-EarlyModern.bagdad.sub <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year > 1500)
-tail(Medieval.bagdad.sub)
-tail(EarlyModern.bagdad.sub)
 ```
 
 ## Can you generate a cumulative graph of population over time, divided into these periods? 
-
+Here we see two graphs of the cumulative growth of the populations over time.
 ```{r}
-Medieval.bagdad.sub <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year <= 1500)
+# Create Data Frame for Medieval and Early Medieval Period
+data.frame.Medieval <- data.frame("year" = MedievalPeriod$year, "country" = MedievalPeriod$country, "pop" = MedievalPeriod$total_pop_country)
+data.frame.EarlyModern <- data.frame("year" = EarlyModernPeriod$year, "country" = EarlyModernPeriod$country, "pop" = EarlyModernPeriod$total_pop_country)
 
-EarlyModern.bagdad.sub <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year > 1500)
-
-data.frame.Medieval <- data.frame("year" = Medieval.bagdad.sub$year, "country" = Medieval.bagdad.sub$country, "pop" = Medieval.bagdad.sub$total_pop_country)
-
-data.frame.EarlyModern <- data.frame("year" = EarlyModern.bagdad.sub$year, "country" = EarlyModern.bagdad.sub$country, "pop" = EarlyModern.bagdad.sub$total_pop_country)
-
+# Make them unique becuase the total population is states in every city, so just need one country per time. 
 uniqueMedieval = unique(data.frame.Medieval[c("year", "country", "pop")])
-aggMedieval = aggregate(uniqueMedieval$pop, by=list(Category=uniqueMedieval$year), FUN=sum)
+aggMedieval = aggregate(uniqueMedieval$pop, by=list(Year=uniqueMedieval$year), FUN=sum)
 
 uniqueEarlyModern = unique(data.frame.EarlyModern[c("year", "country", "pop")])
-aggEarlyModern = aggregate(uniqueEarlyModern$pop, by=list(Category=uniqueEarlyModern$year), FUN=sum)
+aggEarlyModern = aggregate(uniqueEarlyModern$pop, by=list(Year=uniqueEarlyModern$year), FUN=sum)
 
-plot(x = aggMedieval$Category, y = aggMedieval$x, type = "l", col="red", ylab = "Medieval Population", xlab = "Time", main = "Medival Population over Time")
+#Plot it!
+
+plot(x = aggMedieval$Year, y = aggMedieval$x, type = "l", col="red", ylab = "Medieval Population", xlab = "Time", main = "Medival Population over Time")
 par(new = TRUE)
 
 legend("top", legend=c("Medival"),col=c("red"), lty = 1:2, cex=0.8)
 ```
 ```{r}
-plot(x = aggEarlyModern$Category, y = aggEarlyModern$x, type = "l", col="green", xlab = "Early Modern Population", ylab = "Time", lty = 2, main = "Early Modern population over Time")
+# Plot for Early Modern Population
+plot(x = aggEarlyModern$Year, y = aggEarlyModern$x, type = "l", col="green", xlab = "Early Modern Population", ylab = "Time", lty = 2, main = "Early Modern population over Time")
 par(new = TRUE)
 legend("top", legend=c("Early Modern"),col=c("green"), lty = 1:2, cex=0.8)
 ```
 
+```{r}
+# years_medival_early_modern <- unique(bagdad_london_finalRestat$year)
+# 
+# library(ggplot2)
+# ggplot() +
+#   geom_line(data = aggMedieval, aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
+#   geom_line(data= aggEarlyModern, aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size= 1, color ="green") +
+#   xlab("Year") + ylab("Population") +
+#   ggtitle("Population over Time") +
+#   scale_x_continuous(breaks =round(seq(min(years_medival_early_modern), max(years_medival_early_modern), by = 100),1)) +
+# 	scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggEarlyModern$x), by =10000),1)) +
+#   scale_color_discrete(name="Period",  labels = c("Early Modern Population", "Medival Population"))
+```
+
+```{r}
+# medieval_population <- Medieval.bagdad.sub$citypop_le5
+# range_population_medieval <- range(Medieval.bagdad.sub$citypop_le5)
+# range_population_early_modern <- range(EarlyModern.bagdad.sub$citypop_le5)
+# range_years_early_modern <- range(EarlyModern.bagdad.sub$year)
+# 
+# library(ggplot2)
+# ggplot(data = aggEarlyModern, aes(x = aggEarlyModern$Category, y = aggEarlyModern$x)) +
+#   geom_line(aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size=1, color ="green") +
+#   xlab("Year") + ylab("Population") +
+#   ggtitle("Early Modern Population") +
+#  	scale_x_continuous(breaks =round(seq(min(range_years_early_modern), max(range_years_early_modern), by = 100),1)) +
+#   scale_y_continuous(breaks = round(seq(min(aggEarlyModern$x), max(aggEarlyModern$x), by = 10000),1))
+```
+
+```{r}
+# library(ggplot2)
+# ggplot(data = aggMedieval, aes(x = aggMedieval$Category, y = aggMedieval$x)) +
+#   geom_line(aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
+#   xlab("Year") + ylab("Population") +
+#   ggtitle("Medieval Population") +
+#   scale_x_continuous(breaks =round(seq(min(range_years_medival), max(range_years_medival), by = 100),1)) +
+#   scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggMedieval$x), by = 10000),1))
+```
+
+
+
 
 
 # North Africa and Europe?
+## Can you construct comparative graphs of population in North Africa and Europe (similar to what you did with the Morris dataset). Here you will need to sum up population!
+First split the data frame in a African and European Data Frame.
 
 ```{r}
 # Create Vector for Europe
@@ -95,17 +135,23 @@ Europe.bagdad <- bagdad_london_finalRestat$country %in% Europevector
 
 europe <- bagdad_london_finalRestat[bagdad_london_finalRestat$country %in% Europevector, ]
 
-europe.frame = data.frame("year" = europe$year, "country" = europe$country, "pop" = europe$total_pop_country)
-uniqueEurope = unique(europe.frame[c("year", "country", "pop")])
-aggEurope = aggregate(uniqueEurope$pop, by=list(Year=uniqueEurope$year), FUN=sum)
-aggEurope
-
 # Create the North Afrika Data Frame
 
 NorthAfrica.bagdad <- bagdad_london_finalRestat$country %in% NorthAfricavector
 
 northAfrica<- bagdad_london_finalRestat[bagdad_london_finalRestat$country %in% NorthAfricavector, ]
+```
 
+Now we can aggregate the whole thing to collapse the data and plot it in a beautyful plot. 
+
+```{r}
+# Aggregate European Data
+europe.frame = data.frame("year" = europe$year, "country" = europe$country, "pop" = europe$total_pop_country)
+uniqueEurope = unique(europe.frame[c("year", "country", "pop")])
+aggEurope = aggregate(uniqueEurope$pop, by=list(Year=uniqueEurope$year), FUN=sum)
+aggEurope
+
+# Aggregate African Data
 africa.frame = data.frame("year" = northAfrica$year, "country" = northAfrica$country, "pop" = northAfrica$total_pop_country)
 uniqueAfrica = unique(africa.frame[c("year", "country", "pop")])
 aggAfrica = aggregate(uniqueAfrica$pop, by=list(Year=uniqueAfrica$year), FUN=sum)
@@ -120,12 +166,7 @@ plot(x = aggEurope$Year, y = aggEurope$x, type = "l", col="green", axes = FALSE,
 
 legend("top", legend=c("North Africa", "Europe"),col=c("red", "green"), lty = 1:2, cex=0.8)
 
-
-northAfrica %>% count(northAfrica$year)
-northAfrica
 ```
-
-
 
 
 # Austro Hungarian Empire
