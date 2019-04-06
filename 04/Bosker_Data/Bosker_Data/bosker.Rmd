@@ -188,6 +188,35 @@ habsburg %>% count(habsburg$year)
 
 # islamdom and Christiandom
 
+# ```{r}
+# #The ugliest way to determine the biggest muslim cities in Europe between 1000 and 1500.
+# IslamEurop.frame.1000 <- IslamEurop.frame[IslamEurop.frame$year >= 1000, ]
+# IslamEurop.frame.1500 <- IslamEurop.frame.1000[IslamEurop.frame.1000$year <= 1500, ]
+# IslamEurope.fram.1500.Islam <- IslamEurop.frame.1500[IslamEurop.frame.1500$muslim == 1, ]
+# IslamEurope.fram.1500.Islam.Pop <- IslamEurope.fram.1500.Islam[IslamEurope.fram.1500.Islam$Citypop > 20, ]
+# IslamEurope.fram.1500.Islam.Pop.Oops <- IslamEurope.fram.1500.Islam.Pop[IslamEurope.fram.1500.Islam.Pop$country != "Turkey", ]
+# 
+# unique(IslamEurope.fram.1500.Islam.Pop.Oops$city)
+# 
+# #and a clunky way to do the biggest cities both before and after 1500, our period split
+# 
+# Islam.Beta <- data.frame("year" = bagdad_london_finalRestat$year, "city" = bagdad_london_finalRestat$city, "CityPop" = bagdad_london_finalRestat$citypop_le10, "muslim" = bagdad_london_finalRestat$muslim)
+# 
+# Islam.Frame <- Islam.Beta[Islam.Beta$muslim == 1, ]
+# 
+# Islam.Frame.Pre1500 <- Islam.Frame[Islam.Frame$year < 1499, ]
+# Islame.Frame.Post1500 <- Islam.Frame[Islam.Frame$year >= 1500, ]
+# 
+# Islam.Frame.Pre1500.Pop <- Islam.Frame.Pre1500[Islam.Frame.Pre1500$CityPop > 20, ]
+# Islam.Frame.Post1500.Pop <- Islam.Frame.Pre1500[Islam.Frame.Pre1500$CityPop > 20, ]
+# 
+# unique(Islam.Frame.Pre1500.Pop$city)
+# 
+# unique(Islam.Frame.Post1500.Pop$city)
+
+```
+
+
 ```{r}
 #Largest cities of Islamdom for each reported period
 head(bagdad_london_finalRestat)
