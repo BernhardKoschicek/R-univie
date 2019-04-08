@@ -170,23 +170,19 @@ legend("top", legend=c("North Africa", "Europe"),col=c("red", "green"), lty = 1:
 
 ```{r}
 
-habsburg <- bagdad_london_finalRestat[bagdad_london_finalRestat$year>=1500, c('city', 'country', 'year')]
-exclude_countries <- c("Belgium", "Denmark", "Finland", "France", "Ireland", "Netherlands", "Norway", "Poland", "Portugal", "Spain", "Sweden", "UK", "Switzerland", "Greece", "Turkey", "Lebanon", "Israel", "Syria", "Iraq", "Egypt", "Lybia", "Tunesia", "Algeria", "Morocco", "Yemen", "Saudi Arabia","Oman", "Cyprus", "Luxemburg", "Malta", "Bulgaria")
+# Habsburg at the 15 cent. Just country selection, but the way you do it is the same 
+habsburg_15_century <- c("Austria", "Spain", "France", "Italy","Belgium", "Netherlands", "Yugoslavia")
+habsburg_frame_15 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1500)
+habsburg_frame_15 <- habsburg_frame_15[(habsburg_frame_15$country %in% habsburg_15_century), ]
+habsburg_frame_15 %>% count(habsburg_frame_15$year)
 
-habsburg <- habsburg[!(habsburg$country %in% exclude_countries), ]
-
-habsburg
-library("plyr")
-library("tidyr")
-library("dplyr")
-
+# Habsburg at the 16 cent. Just country selection, but the way you do it is the same 
 habsburg_16_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Serbia", "Croatia", "Slovenia", "Galicia", "Ukraine", "Poland", "Luxemburg", "Belgium", "Germany", "France", "Spain", "Portugal", "Netherlands")
-
-habsburg_frame_16 <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year == 1600)
-
-habsburg_frame_16 <- habsburg[!(habsburg$country %in% habsburg_16_century), ]
-
+habsburg_frame_16 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1600)
+habsburg_frame_16 <- habsburg_frame_16[(habsburg_frame_16$country %in% habsburg_16_century), ]
 habsburg_frame_16 %>% count(habsburg_frame_16$year)
+
+
 ```
 
 # islamdom and Christiandom
