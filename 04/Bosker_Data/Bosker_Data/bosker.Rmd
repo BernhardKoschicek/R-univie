@@ -13,7 +13,7 @@ author: Bernhard Koschicek
 ```{r}
 library(foreign)
 bagdad_london_finalRestat <- read.dta("C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/04/Bosker_Data/Bosker_Data/bagdad-london--finalRestat.dta")
-bagdad_london_finalRestat
+#bagdad_london_finalRestat
 #summary(bagdad_london_finalRestat$year)
 #subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year==1800)
 ```
@@ -36,7 +36,7 @@ summary(bagdad_london_finalRestat$year)
 ```
 
 ## What periods can it be divided into? How can we do that?
-Well there are many humanists ways to seperate the data. Here it will just be divided in Medieval and Early Modern Era. We/I decided that it will be the best to split it at 1500, and 1500 is still medieval. 
+Well there are many humanists ways to seperate the data. Here it will just be divided in Medieval and Early Modern Era. We/I decided that it will be the best to split it at 1500, and 1500 is still medieval. We can add other periods but it is always rinse, repeat.
 
 ```{r}
 MedievalPeriod <- subset(bagdad_london_finalRestat,  bagdad_london_finalRestat$year <= 1500)
@@ -49,7 +49,7 @@ tail(EarlyModernPeriod)
 ```
 
 ## Can you generate a cumulative graph of population over time, divided into these periods? 
-Here we see two graphs of the cumulative growth of the populations over time.
+Here we see two graphs of the cumulative growth of the populations over time. If the ggplot2 works you can see the graph with 2 lines in one. 
 ```{r}
 # Create Data Frame for Medieval and Early Medieval Period
 data.frame.Medieval <- data.frame("year" = MedievalPeriod$year, "country" = MedievalPeriod$country, "pop" = MedievalPeriod$total_pop_country)
@@ -69,12 +69,6 @@ par(new = TRUE)
 
 legend("top", legend=c("Medival"),col=c("red"), lty = 1:2, cex=0.8)
 
-medieval_population <- Medieval.bagdad.sub$citypop_le5
-range_population_medieval <- range(Medieval.bagdad.sub$citypop_le5)
-range_population_early_modern <- range(EarlyModern.bagdad.sub$citypop_le5)
-range_years_early_modern <- range(EarlyModern.bagdad.sub$year)
-years_medival_early_modern <- unique(bagdad_london_finalRestat$year)
-
 ```
 ```{r}
 # Plot for Early Modern Population
@@ -82,44 +76,58 @@ plot(x = aggEarlyModern$Year, y = aggEarlyModern$x, type = "l", col="green", xla
 par(new = TRUE)
 legend("top", legend=c("Early Modern"),col=c("green"), lty = 1:2, cex=0.8)
 ```
+```{r}
+pop_merge = merge(aggEarlyModern, aggMedieval, by = "Year", all = TRUE)
+pop_merge
+year = unique(bagdad_london_finalRestat$year)
+
+# Plot for together
+plot(x = year, pop_merge$x.x, type = "o", col="green", xlab = "Early Modern Population", ylab = "Time",  main = "Early Modern population over Time", axes=FALSE, ann=FALSE, ylim=c(50000, 200000))
+axis(1, at=year, lab=year)
+axis(2, at=pop_merge$x.x, las=1, tck=-0.05, cex.axis=0.7)
+box()
+lines(x = unique(bagdad_london_finalRestat$year), pop_merge$x.y, type="o", pch=22, col="red")
+par(new = TRUE)
+legend("top", legend=c("Early Modern", "Medieval"),col=c("green", "red"), lty = 1:1, cex=0.8)
+```
+The whole thing with ggplot, which worked, but then suddenly stopped working.
 
 ```{r}
-library(ggplot2)
-ggplot(data = aggEarlyModern, aes(x = aggEarlyModern$Category, y = aggEarlyModern$x)) +
-  geom_line(aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size=1, color ="green") +
-  xlab("Year") + ylab("Population") +
-  ggtitle("Early Modern Population") +
- 	scale_x_continuous(breaks =round(seq(min(range_years_early_modern), max(range_years_early_modern), by = 100),1)) +
-  scale_y_continuous(breaks = round(seq(min(aggEarlyModern$x), max(aggEarlyModern$x), by = 10000),1))
-```
-```{r}
-library(ggplot2)
-ggplot(data = aggMedieval, aes(x = aggMedieval$Category, y = aggMedieval$x)) +
-  geom_line(aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
-  xlab("Year") + ylab("Population") +
-  ggtitle("Medieval Population") +
-  scale_x_continuous(breaks =round(seq(min(range_years_medival), max(range_years_medival), by = 100),1)) +
-  scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggMedieval$x), by = 10000),1))
+# library(ggplot2)
+# ggplot(data = aggEarlyModern, aes(x = aggEarlyModern$Category, y = aggEarlyModern$x)) +
+#   geom_line(aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size=1, color ="green") +
+#   xlab("Year") + ylab("Population") +
+#   ggtitle("Early Modern Population") +
+#  	scale_x_continuous(breaks =round(seq(min(range_years_early_modern), max(range_years_early_modern), by = 100),1)) +
+#   scale_y_continuous(breaks = round(seq(min(aggEarlyModern$x), max(aggEarlyModern$x), by = 10000),1))
+# ```
+# ```{r}
+# library(ggplot2)
+# ggplot(data = aggMedieval, aes(x = aggMedieval$Category, y = aggMedieval$x)) +
+#   geom_line(aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
+#   xlab("Year") + ylab("Population") +
+#   ggtitle("Medieval Population") +
+#   scale_x_continuous(breaks =round(seq(min(range_years_medival), max(range_years_medival), by = 100),1)) +
+#   scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggMedieval$x), by = 10000),1))
 ```
 The code gives both graphs in one plot:
 ```{r}
-medieval_population <- Medieval.bagdad.sub$citypop_le5
-range_population_medieval <- range(Medieval.bagdad.sub$citypop_le5)
-range_population_early_modern <- range(EarlyModern.bagdad.sub$citypop_le5)
-range_years_early_modern <- range(EarlyModern.bagdad.sub$year)
-years_medival_early_modern <- unique(bagdad_london_finalRestat$year)
-
-library(ggplot2)
-ggplot() +
-  geom_line(data = aggMedieval, aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
-  geom_line(data= aggEarlyModern, aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size= 1, color ="green") +
-  xlab("Year") + ylab("Population") +
-  ggtitle("Population over Time") +
-  scale_x_continuous(breaks =round(seq(min(years_medival_early_modern), max(years_medival_early_modern), by = 100),1)) +
-	scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggEarlyModern$x), by =10000),1)) +
-  scale_color_discrete(name="Period",  labels = c("Early Modern Population", "Medival Population"))
+# medieval_population <- Medieval.bagdad.sub$citypop_le5
+# range_population_medieval <- range(Medieval.bagdad.sub$citypop_le5)
+# range_population_early_modern <- range(EarlyModern.bagdad.sub$citypop_le5)
+# range_years_early_modern <- range(EarlyModern.bagdad.sub$year)
+# years_medival_early_modern <- unique(bagdad_london_finalRestat$year)
+# 
+# library(ggplot2)
+# ggplot() +
+#   geom_line(data = aggMedieval, aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
+#   geom_line(data= aggEarlyModern, aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size= 1, color ="green") +
+#   xlab("Year") + ylab("Population") +
+#   ggtitle("Population over Time") +
+#   scale_x_continuous(breaks =round(seq(min(years_medival_early_modern), max(years_medival_early_modern), by = 100),1)) +
+# 	scale_y_continuous(breaks = round(seq(min(aggMedieval$x), max(aggEarlyModern$x), by =10000),1)) +
+#   scale_color_discrete(name="Period",  labels = c("Early Modern Population", "Medival Population"))
 ```
-
 
 
 
@@ -173,131 +181,136 @@ legend("top", legend=c("North Africa", "Europe"),col=c("red", "green"), lty = 1:
 ```
 
 
-# Habsburg Empire 1500 - 1800
+# Habsburg Empire 1500 - 1800 (the Austro-Hungarian Empire)
+## When did the Empire had the largest number of cities (based on the data set)?
+So first of all the the Austro-Hungarian empire was not until 1867, so the question is not solveable with this dataset. But instead of this construct I took the Habsburg dynasty from 1500 to 1800 based on the data from [habsburger.net](https://www.habsburger.net/de/landkarte). Since the whole task is hideous and I went for the countrys where Habsburg were present at the given time. The code is basically the same just with another vector for the cities. 
 
 ```{r}
-library(dplyr)
-library(plyr)
-library(tidyr)
+# library(dplyr)
+# library(plyr)
+# library(tidyr)
 
 # Habsburg at the 15 cent. Just country selection, but the way you do it is the same 
 habsburg_15_century <- c("Austria", "Spain", "France", "Italy","Belgium", "Netherlands", "Yugoslavia")
 habsburg_frame_15 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1500)
 habsburg_frame_15 <- habsburg_frame_15[(habsburg_frame_15$country %in% habsburg_15_century), ]
-habsburg_frame_15
-habsburg_frame_15 %>% count(habsburg_frame_15$year)
+max_15 =nrow(habsburg_frame_15)
+#habsburg_frame_15 %>% count(habsburg_frame_15[habsburg_frame_15$year, ])
 
 # Habsburg at the 16 cent. Just country selection, but the way you do it is the same 
 habsburg_16_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Serbia", "Croatia", "Slovenia", "Galicia", "Ukraine", "Poland", "Luxemburg", "Belgium", "Germany", "France", "Spain", "Portugal", "Netherlands")
 habsburg_frame_16 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1600)
 habsburg_frame_16 <- habsburg_frame_16[(habsburg_frame_16$country %in% habsburg_16_century), ]
-habsburg_frame_16 %>% count(habsburg_frame_16$year)
+max_16 =  nrow(habsburg_frame_16)
+#habsburg_frame_16 %>% count(habsburg_frame_16$year)
+
+#Habsburg at the 17 cent. Just country selection, but the way you do it is the same 
+habsburg_17_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Serbia", "Croatia", "Slovenia", "Ukraine", "Poland", "Luxemburg", "Belgium", "Netherlands")
+habsburg_frame_17 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1700)
+habsburg_frame_17 <- habsburg_frame_17[(habsburg_frame_17$country %in% habsburg_17_century), ]
+max_17 = nrow(habsburg_frame_17)
+#habsburg_frame_17 %>% count(habsburg_frame_17$year)
 
 #Habsburg at the 18 cent. Just country selection, but the way you do it is the same 
 habsburg_18_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Yugoslavia", "Poland")
 habsburg_frame_18 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1800)
 habsburg_frame_18 <- habsburg_frame_18[(habsburg_frame_18$country %in% habsburg_18_century), ]
-habsburg_frame_18 %>% count(habsburg_frame_18$year)
+max_18 = nrow(habsburg_frame_18)
+#habsburg_frame_18 %>% count(habsburg_frame_18$year)
 
-# Habsburg Popultion
-# Since we only operate at country level, the result isn't quit accurate or something, but well it is the solution to the question but without the needed Dataset. I just say it is a hideous task and since the Autro-Hungarian Empire didn't even EXIST befor the 19th cent. the question is not possible to resolve with the given dataset. 
-pop_h_15 = sum(habsburg_frame_15$citypop_le5 * 1000)
-pop_h_16 = sum(habsburg_frame_16$citypop_le5 * 1000)
-pop_h_17 = NA
-pop_h_18 = sum(habsburg_frame_18$citypop_le5 * 1000)
+# Create a Barplot for better visualisation
+max_habsburg = c(max_15, max_16, max_17, max_18)
+barplot(max_habsburg, main = "Habsburg Extent", xlab = "Century", ylab = "Total Number of cities, not Accurate!!", names.arg=c("1500","1600","1700","1800") )
 
+# Habsburg Population
+# Since we only operate at country level, the result isn't quite accurate or something, but well it is the solution to the question but without the needed Dataset. I just say it is a hideous task and since the Austro-Hungarian Empire didn't even EXIST before the 19th cent. the question is not possible to resolve with the given dataset. 
+pop_h_15 = sum(habsburg_frame_15$citypop_le5)
+pop_h_16 = sum(habsburg_frame_16$citypop_le5)
+pop_h_17 = sum(habsburg_frame_17$citypop_le5)
+pop_h_18 = sum(habsburg_frame_18$citypop_le5)
+
+# Create a Barplot for better visualisation
 pop_habsburg = c(pop_h_15, pop_h_16, pop_h_17, pop_h_18)
-barplot(pop_habsburg, main = "Habsburg Population", xlab = "Century", ylab = "Total")
+barplot(pop_habsburg, main = "Habsburg Population", xlab = "Century", ylab = "Total Population ( x1000)", names.arg=c("1500","1600","1700","1800") )
 
 ```
 
-# islamdom and Christiandom
+# Islamdom and Christiandom
+## What are the largest cities of Islamdom for each reported period?
+We start out by creating an Islamdom dataset.
+We remove all countries that were at no point part of Islamdom.
+Add a variable: Islamdom.
+For any and all cities that are part of a core of Islamdom, we give this variable a value of 1 for all centuries.
+For cities that are only a part of Islamdom in specific timeframes we make that variable 1 for those times when it was a part of the empire.
+We remove all cities that were never part of Islamdom.
+We can then apply max() to the populations of any given time period - again, by subsetting to restrict the timeframe.
 
-# ```{r}
-# #The ugliest way to determine the biggest muslim cities in Europe between 1000 and 1500.
-# IslamEurop.frame.1000 <- IslamEurop.frame[IslamEurop.frame$year >= 1000, ]
-# IslamEurop.frame.1500 <- IslamEurop.frame.1000[IslamEurop.frame.1000$year <= 1500, ]
-# IslamEurope.fram.1500.Islam <- IslamEurop.frame.1500[IslamEurop.frame.1500$muslim == 1, ]
-# IslamEurope.fram.1500.Islam.Pop <- IslamEurope.fram.1500.Islam[IslamEurope.fram.1500.Islam$Citypop > 20, ]
-# IslamEurope.fram.1500.Islam.Pop.Oops <- IslamEurope.fram.1500.Islam.Pop[IslamEurope.fram.1500.Islam.Pop$country != "Turkey", ]
-# 
-# unique(IslamEurope.fram.1500.Islam.Pop.Oops$city)
-# 
-# #and a clunky way to do the biggest cities both before and after 1500, our period split
-# 
-# Islam.Beta <- data.frame("year" = bagdad_london_finalRestat$year, "city" = bagdad_london_finalRestat$city, "CityPop" = bagdad_london_finalRestat$citypop_le10, "muslim" = bagdad_london_finalRestat$muslim)
-# 
-# Islam.Frame <- Islam.Beta[Islam.Beta$muslim == 1, ]
-# 
-# Islam.Frame.Pre1500 <- Islam.Frame[Islam.Frame$year < 1499, ]
-# Islame.Frame.Post1500 <- Islam.Frame[Islam.Frame$year >= 1500, ]
-# 
-# Islam.Frame.Pre1500.Pop <- Islam.Frame.Pre1500[Islam.Frame.Pre1500$CityPop > 20, ]
-# Islam.Frame.Post1500.Pop <- Islam.Frame.Pre1500[Islam.Frame.Pre1500$CityPop > 20, ]
-# 
-# unique(Islam.Frame.Pre1500.Pop$city)
-# 
-# unique(Islam.Frame.Post1500.Pop$city)
+## What are the largest western cities of Islamdom between 1000 and 1500 CE?
+This is somewhat dependent upon what this question means.
+If the question is simply about which were the largest cities that were muslim in what we consider the West, it's easy.
+We restrict the dataset to the west, and to 1000 to 1500, sort out any cities across all periods that were not muslim (using the muslim variable) and there we have it.  A list of all muslim cities in the west, to be sorted by size if so desired.  If the question is then of largest and at what time, that can be printed out.  If the question is simply which were the largest, a unique() list of cities sorted by size (greater than an arbitrary mark) will provide all fitting cities.
 
-```
+If, however, the question is about the extent of Islamdom, we need to create a full reconstruction of Islamdom, then examine its western reaches city by city for the largest.  
 
 
-```{r}
-#Largest cities of Islamdom for each reported period
-head(bagdad_london_finalRestat)
-acht<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 800)
-neun<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 900)
-t<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1000)
-teins<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1100)
-tzwei<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1200)
-tdrei<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1300)
-tvier<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1400)
-tfunf<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1500)
-tsechs<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1600)
-tsieben<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1700)
-tacht<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1800)
-#brauch ich auch nicht: Muslimcit<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$muslim == 1)
-achtmuslcit<-subset(acht, acht$muslim==1)
-max(achtmuslcit$citypop_le10)
-neunmuslcit<-subset(neun, neun$muslim==1)
-max(neunmuslcit$citypop_le10)
-tmuslcit<-subset(t, t$muslim==1)
-max(tmuslcit$citypop_le10)
-teinsmuslcit<-subset(teins, teins$muslim==1)
-max(teinsmuslcit$citypop_le10)
-tzweimuslcit<-subset(tzwei, tzwei$muslim==1)
-max(tzweimuslcit$citypop_le10)
-tdreimuslcit<-subset(tdrei, tdrei$muslim==1)
-max(tdreimuslcit$citypop_le10)
-tviermuslcit<-subset(tvier, tvier$muslim==1)
-max(tviermuslcit$citypop_le10)
-tfunfmuslcit<-subset(tfunf, tfunf$muslim==1)
-max(tfunfmuslcit$citypop_le10)
-tsechsmuslcit<-subset(tsechs, tsechs$muslim==1)
-max(tsechsmuslcit$citypop_le10)
-tsiebenmuslcit<-subset(tsieben, tsieben$muslim==1)
-max(tsiebenmuslcit$citypop_le10)
-tachtmuslcit<-subset(tacht, tacht$muslim==1)
-max(tachtmuslcit$citypop_le10)
 
-library(dplyr)
-cityacht<-filter(achtmuslcit, achtmuslcit$citypop_le10>=350)
-cityacht
-cityneun<-filter(neunmuslcit, neunmuslcit$citypop_le10>=450)
-cityneun
-citytausend<-filter(tmuslcit, tmuslcit$citypop_le10>=300)
-citytausend
-citytausendein<-filter(teinsmuslcit, teinsmuslcit$citypop_le10>=250)
-citytausendein
-citytausendzwei<-filter(tzweimuslcit, tzweimuslcit$citypop_le10>=200)
-citytausendzwei
-citytausenddrei<-filter(tdreimuslcit, tdreimuslcit$citypop_le10>=220)
-citytausenddrei
-citytausendvier<-filter(tviermuslcit, tviermuslcit$citypop_le10>=250)
-citytausendfunf<-filter(tfunfmuslcit, tfunfmuslcit$citypop_le10>=280)
-citytausendsechs<-filter(tsechsmuslcit, tsechsmuslcit$citypop_le10>=700)
-citytausendsieben<-filter(tsiebenmuslcit, tsiebenmuslcit$citypop_le10>=700)
-citytausendacht<-filter(tachtmuslcit, tachtmuslcit$citypop_le10>=500)
-citytausendacht
-```
+
+<!-- ```{r} -->
+<!-- #Largest cities of Islamdom for each reported period -->
+<!-- head(bagdad_london_finalRestat) -->
+<!-- acht<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 800) -->
+<!-- neun<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 900) -->
+<!-- t<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1000) -->
+<!-- teins<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1100) -->
+<!-- tzwei<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1200) -->
+<!-- tdrei<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1300) -->
+<!-- tvier<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1400) -->
+<!-- tfunf<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1500) -->
+<!-- tsechs<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1600) -->
+<!-- tsieben<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1700) -->
+<!-- tacht<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1800) -->
+<!-- #brauch ich auch nicht: Muslimcit<-subset(bagdad_london_finalRestat, bagdad_london_finalRestat$muslim == 1) -->
+<!-- achtmuslcit<-subset(acht, acht$muslim==1) -->
+<!-- max(achtmuslcit$citypop_le10) -->
+<!-- neunmuslcit<-subset(neun, neun$muslim==1) -->
+<!-- max(neunmuslcit$citypop_le10) -->
+<!-- tmuslcit<-subset(t, t$muslim==1) -->
+<!-- max(tmuslcit$citypop_le10) -->
+<!-- teinsmuslcit<-subset(teins, teins$muslim==1) -->
+<!-- max(teinsmuslcit$citypop_le10) -->
+<!-- tzweimuslcit<-subset(tzwei, tzwei$muslim==1) -->
+<!-- max(tzweimuslcit$citypop_le10) -->
+<!-- tdreimuslcit<-subset(tdrei, tdrei$muslim==1) -->
+<!-- max(tdreimuslcit$citypop_le10) -->
+<!-- tviermuslcit<-subset(tvier, tvier$muslim==1) -->
+<!-- max(tviermuslcit$citypop_le10) -->
+<!-- tfunfmuslcit<-subset(tfunf, tfunf$muslim==1) -->
+<!-- max(tfunfmuslcit$citypop_le10) -->
+<!-- tsechsmuslcit<-subset(tsechs, tsechs$muslim==1) -->
+<!-- max(tsechsmuslcit$citypop_le10) -->
+<!-- tsiebenmuslcit<-subset(tsieben, tsieben$muslim==1) -->
+<!-- max(tsiebenmuslcit$citypop_le10) -->
+<!-- tachtmuslcit<-subset(tacht, tacht$muslim==1) -->
+<!-- max(tachtmuslcit$citypop_le10) -->
+
+<!-- library(dplyr) -->
+<!-- cityacht<-filter(achtmuslcit, achtmuslcit$citypop_le10>=350) -->
+<!-- cityacht -->
+<!-- cityneun<-filter(neunmuslcit, neunmuslcit$citypop_le10>=450) -->
+<!-- cityneun -->
+<!-- citytausend<-filter(tmuslcit, tmuslcit$citypop_le10>=300) -->
+<!-- citytausend -->
+<!-- citytausendein<-filter(teinsmuslcit, teinsmuslcit$citypop_le10>=250) -->
+<!-- citytausendein -->
+<!-- citytausendzwei<-filter(tzweimuslcit, tzweimuslcit$citypop_le10>=200) -->
+<!-- citytausendzwei -->
+<!-- citytausenddrei<-filter(tdreimuslcit, tdreimuslcit$citypop_le10>=220) -->
+<!-- citytausenddrei -->
+<!-- citytausendvier<-filter(tviermuslcit, tviermuslcit$citypop_le10>=250) -->
+<!-- citytausendfunf<-filter(tfunfmuslcit, tfunfmuslcit$citypop_le10>=280) -->
+<!-- citytausendsechs<-filter(tsechsmuslcit, tsechsmuslcit$citypop_le10>=700) -->
+<!-- citytausendsieben<-filter(tsiebenmuslcit, tsiebenmuslcit$citypop_le10>=700) -->
+<!-- citytausendacht<-filter(tachtmuslcit, tachtmuslcit$citypop_le10>=500) -->
+<!-- citytausendacht -->
+<!-- ``` -->
 
