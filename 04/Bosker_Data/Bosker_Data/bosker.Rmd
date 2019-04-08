@@ -68,6 +68,13 @@ plot(x = aggMedieval$Year, y = aggMedieval$x, type = "l", col="red", ylab = "Med
 par(new = TRUE)
 
 legend("top", legend=c("Medival"),col=c("red"), lty = 1:2, cex=0.8)
+
+medieval_population <- Medieval.bagdad.sub$citypop_le5
+range_population_medieval <- range(Medieval.bagdad.sub$citypop_le5)
+range_population_early_modern <- range(EarlyModern.bagdad.sub$citypop_le5)
+range_years_early_modern <- range(EarlyModern.bagdad.sub$year)
+years_medival_early_modern <- unique(bagdad_london_finalRestat$year)
+
 ```
 ```{r}
 # Plot for Early Modern Population
@@ -169,11 +176,15 @@ legend("top", legend=c("North Africa", "Europe"),col=c("red", "green"), lty = 1:
 # Habsburg Empire 1500 - 1800
 
 ```{r}
+library(dplyr)
+library(plyr)
+library(tidyr)
 
 # Habsburg at the 15 cent. Just country selection, but the way you do it is the same 
 habsburg_15_century <- c("Austria", "Spain", "France", "Italy","Belgium", "Netherlands", "Yugoslavia")
 habsburg_frame_15 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1500)
 habsburg_frame_15 <- habsburg_frame_15[(habsburg_frame_15$country %in% habsburg_15_century), ]
+habsburg_frame_15
 habsburg_frame_15 %>% count(habsburg_frame_15$year)
 
 # Habsburg at the 16 cent. Just country selection, but the way you do it is the same 
@@ -182,6 +193,21 @@ habsburg_frame_16 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat
 habsburg_frame_16 <- habsburg_frame_16[(habsburg_frame_16$country %in% habsburg_16_century), ]
 habsburg_frame_16 %>% count(habsburg_frame_16$year)
 
+#Habsburg at the 18 cent. Just country selection, but the way you do it is the same 
+habsburg_18_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Yugoslavia", "Poland")
+habsburg_frame_18 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1800)
+habsburg_frame_18 <- habsburg_frame_18[(habsburg_frame_18$country %in% habsburg_18_century), ]
+habsburg_frame_18 %>% count(habsburg_frame_18$year)
+
+# Habsburg Popultion
+# Since we only operate at country level, the result isn't quit accurate or something, but well it is the solution to the question but without the needed Dataset. I just say it is a hideous task and since the Autro-Hungarian Empire didn't even EXIST befor the 19th cent. the question is not possible to resolve with the given dataset. 
+pop_h_15 = sum(habsburg_frame_15$citypop_le5 * 1000)
+pop_h_16 = sum(habsburg_frame_16$citypop_le5 * 1000)
+pop_h_17 = NA
+pop_h_18 = sum(habsburg_frame_18$citypop_le5 * 1000)
+
+pop_habsburg = c(pop_h_15, pop_h_16, pop_h_17, pop_h_18)
+barplot(pop_habsburg, main = "Habsburg Population", xlab = "Century", ylab = "Total")
 
 ```
 
