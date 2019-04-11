@@ -1,9 +1,9 @@
 ---
 title: "bosker"
 output:
-  html_document:
-  df_print: paged
   pdf_document: default
+  df_print: paged
+  html_document:
   word_document: default
 author: Bernhard Koschicek
 ---
@@ -93,15 +93,15 @@ legend("top", legend=c("Early Modern", "Medieval"),col=c("green", "red"), lty = 
 The whole thing with ggplot, which worked, but then suddenly stopped working.
 
 ```{r}
-# library(ggplot2)
+library(ggplot2)
 # ggplot(data = aggEarlyModern, aes(x = aggEarlyModern$Category, y = aggEarlyModern$x)) +
 #   geom_line(aes(y = aggEarlyModern$x, x= aggEarlyModern$Category), size=1, color ="green") +
 #   xlab("Year") + ylab("Population") +
 #   ggtitle("Early Modern Population") +
 #  	scale_x_continuous(breaks =round(seq(min(range_years_early_modern), max(range_years_early_modern), by = 100),1)) +
 #   scale_y_continuous(breaks = round(seq(min(aggEarlyModern$x), max(aggEarlyModern$x), by = 10000),1))
-# ```
-# ```{r}
+```
+```{r}
 # library(ggplot2)
 # ggplot(data = aggMedieval, aes(x = aggMedieval$Category, y = aggMedieval$x)) +
 #   geom_line(aes(y = aggMedieval$x, x= aggMedieval$Category), size=1, color ="steelblue") +
@@ -195,28 +195,28 @@ habsburg_15_century <- c("Austria", "Spain", "France", "Italy","Belgium", "Nethe
 habsburg_frame_15 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1500)
 habsburg_frame_15 <- habsburg_frame_15[(habsburg_frame_15$country %in% habsburg_15_century), ]
 max_15 =nrow(habsburg_frame_15)
-#habsburg_frame_15 %>% count(habsburg_frame_15[habsburg_frame_15$year, ])
+# habsburg_frame_15 %>% count(habsburg_frame_15[habsburg_frame_15$year, ])
 
 # Habsburg at the 16 cent. Just country selection, but the way you do it is the same 
 habsburg_16_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Serbia", "Croatia", "Slovenia", "Galicia", "Ukraine", "Poland", "Luxemburg", "Belgium", "Germany", "France", "Spain", "Portugal", "Netherlands")
 habsburg_frame_16 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1600)
 habsburg_frame_16 <- habsburg_frame_16[(habsburg_frame_16$country %in% habsburg_16_century), ]
 max_16 =  nrow(habsburg_frame_16)
-#habsburg_frame_16 %>% count(habsburg_frame_16$year)
+# habsburg_frame_16 %>% count(habsburg_frame_16$year)
 
 #Habsburg at the 17 cent. Just country selection, but the way you do it is the same 
 habsburg_17_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Serbia", "Croatia", "Slovenia", "Ukraine", "Poland", "Luxemburg", "Belgium", "Netherlands")
 habsburg_frame_17 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1700)
 habsburg_frame_17 <- habsburg_frame_17[(habsburg_frame_17$country %in% habsburg_17_century), ]
 max_17 = nrow(habsburg_frame_17)
-#habsburg_frame_17 %>% count(habsburg_frame_17$year)
+# habsburg_frame_17 %>% count(habsburg_frame_17$year)
 
 #Habsburg at the 18 cent. Just country selection, but the way you do it is the same 
 habsburg_18_century <- c("Austria", "Hungary", "Italy", "Slovakia", "Czech rep.", "Rumenia", "Yugoslavia", "Poland")
 habsburg_frame_18 <- subset(bagdad_london_finalRestat, bagdad_london_finalRestat$year == 1800)
 habsburg_frame_18 <- habsburg_frame_18[(habsburg_frame_18$country %in% habsburg_18_century), ]
 max_18 = nrow(habsburg_frame_18)
-#habsburg_frame_18 %>% count(habsburg_frame_18$year)
+# habsburg_frame_18 %>% count(habsburg_frame_18$year)
 
 # Create a Barplot for better visualisation
 max_habsburg = c(max_15, max_16, max_17, max_18)
