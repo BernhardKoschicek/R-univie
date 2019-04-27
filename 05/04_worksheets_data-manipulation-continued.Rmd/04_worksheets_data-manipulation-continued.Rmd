@@ -21,9 +21,9 @@ To begin, we will load the necessary packages, as well as the Methodist data.
 
 ```{r, message=FALSE}
 library(tidyverse)
-library(historydata)
-data("methodists")
-methodists
+
+load(file = "C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/05/methodists.rda")
+
 ```
 
 ## Data joining with two table verbs (`left_join()` et al.)
@@ -85,25 +85,56 @@ ggplot(methodists_region, aes(x = members_white, y = members_black)) +
 (@) Can you summarize the racial composition of the different regions by year (i.e., a region had a certain percentage white and black members for a given year) and create a plot of the changing racial composition in each region over time?
 
 ```{r}
-
+methodists_region <- methodists %>% 
+  left_join(regions, by = "state")
+racial_composition <- methodists_region %>%
+  group_by(year, region) %>%
+  summarise(sum_white = sum(members_white), sum_black = sum(members_black))
+ggplot(racial_composition, aes(x = year, y = sum_black)) +
+  geom_point(shape = 1, col = "black") +
+  geom_point(aes(y = sum_white), shape = 2, col = "blue") +
+  facet_wrap(~ region)
 ```
 
 (@) In the europop package there are two data frames, `europop` with the historical populations of European cities, and `city_coords` which has the latitudes and longitudes of those cities. Load that package and join the two tables together. Can you get the populations of cities north of 48° of latitude?
 
 ```{r}
-
+library(europop)
+ljoined_europop <- europop %>%
+  left_join(city_coords, by = "city")
+ljoined_europop
+ljoined_europop %>%
+  filter(lat > 48) %>%
+  arrange(desc(lat)) %>%
+  group_by(city) %>%
+  summarise(sum_pop = sum(population, na.rm=TRUE))
 ```
 
 (@) In the historydata package there are two tables, `judges_people` and `judges_appointments`. Join them together. What are the names of black judges who were appointed to the Supreme Court?
 
 ```{r}
-
+library(historydata)
+joined_judges <- judges_people %>%
+  left_join(judges_appointments, by ="judge_id")
+black_supreme <- joined_judges %>%
+  mutate(name = paste(name_first, name_last, sep = " ")) %>%
+  filter(race == "African American", court_name == "Supreme Court of the United States") %>%
+  select(name, race, court_name)
+black_supreme
 ```
 
 (@) What courts did those justices serve on before the Supreme Court?
 
 ```{r}
+joined_judges %>%
+  mutate(name = paste(name_first, name_last, sep = " ")) %>%
+  filter(court_name != "Supreme Court of the United States", name == "Clarence Thomas") %>%
+  select(name, court_name)
 
+joined_judges %>%
+  mutate(name = paste(name_first, name_last, sep = " ")) %>%
+  filter(court_name != "Supreme Court of the United States", name == "Thurgood Marshall") %>%
+  select(name, court_name)
 ```
 
 ## Data reshaping (`spread()` and `gather()`)
@@ -172,24 +203,30 @@ methodists_by_year_race
 (@) The data in `methodists_by_year_race` could be tidier still. While `white`, `black`, and `indian` are variables, it is perhaps better to think of them as two different variables. One variable would be `race`, containing the racial descriptions that the Methodists used, and another would be `members`, containing the number of members. Using the `gather()` function, create that data frame.
 
 ```{r}
-
+methodists_tidy <- methodists_by_year_race %>%
+  gather(race, members, -year)
+methodists_tidy
 ```
 
 (@) Use the data frame you created in the previous step to create a line plot of membership over time, mapping the `race` column to the `color` aesthetic.
 
 ```{r}
-
+ggplot(methodists_tidy, aes(x = year, y = members), color = "aesthetic") +
+  geom_smooth(method = lm) +
+  ggtitle("Membership over time")
 ```
 
 (@) Now use that newly tidied data frame to create a wide data frame, where the years are the column headers and the racial descriptions are the rows.
 
 ```{r}
-
+methodists_tidy %>%
+  spread(year, members)
 ```
 
 (@) Now use the same tidied data to create a wide data frame where the racial descriptions are column headers and the years are rows.
 
 ```{r}
-
+methodists_tidy %>%
+  spread(race, members)
 ```
 

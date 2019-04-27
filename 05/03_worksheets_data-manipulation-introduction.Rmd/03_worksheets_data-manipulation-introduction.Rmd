@@ -1,6 +1,11 @@
 ---
 title: "Data manipulation with dplyr"
-author: ''
+output:
+  html_document:
+  df_print: paged
+  pdf_document: default
+  word_document: default
+author: Bernhard Koschicek
 ---
 
 **NB:** The worksheet has beed developed and prepared by Lincoln Mullen. Source: Lincoln A. Mullen, *Computational Historical Thinking: With Applications in R (2018–)*: <http://dh-r.lincolnmullen.com>.
@@ -24,8 +29,8 @@ library(tidyverse)
 # library(historydata)
 # data(methodists)
 # methodists 
-meth <- load(file = "C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/05/methodists.rda")
-meth
+load(file = "C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/05/methodists.rda")
+
 ```
 
 ## Selecting columns (`select()`)
@@ -89,6 +94,10 @@ Notice that we chained the data manipulation functions using the pipe (`%>%`). T
 (@) Create two new columns, one with the percentage of white members, and one with the percentage of black members.
 
 ```{r}
+methodists %>%
+  mutate(percentage_white =  members_white / members_total * 100) %>%
+  mutate(percentage_black = members_black / members_total * 100) %>%
+  select(year, state, meeting, percentage_black, percentage_white)
 
 ```
 
@@ -104,13 +113,20 @@ methodists %>%
 (@) Which meetings had the highest number of black members? Select only the necessary columns so that the results print in a meaningful way.
 
 ```{r}
+methodists %>%
+  arrange(desc(members_black)) %>%
+  select(year, state, meeting, members_black)
 
 ```
 
 (@) Which meetings had the high percentage of black members without being entirely black?
 
 ```{r}
-
+methodists %>%
+  mutate(percentage_black = members_black / members_total * 100) %>%
+  filter(percentage_black < 100) %>%
+  arrange(desc(percentage_black)) %>%
+  select(year, state, meeting, percentage_black, members_black, members_white)
 ```
 
 ## Split-apply-combine (`group_by()`)
@@ -141,25 +157,42 @@ We get the same results more concisely and reliably, though the steps of "split-
 (@) For each year, which was the biggest circuit?
 
 ```{r}
-
+methodists %>%
+  select(year, meeting, members_total) %>%
+  group_by(year) %>%
+  top_n(1, members_total)
 ```
 
 (@) For each year, which church had the biggest percentage of black members without being entirely black?
 
 ```{r}
-
+methodists %>%
+  select(year, meeting, members_black, members_white, members_total) %>%
+  mutate(percentage_black = members_black / members_total * 100) %>%
+  filter(percentage_black < 100) %>%  
+  group_by(year) %>%
+  top_n(1, percentage_black)
 ```
 
 (@) For the year 1825, what was the biggest meeting in each conference? In each district?
 
 ```{r}
+methodists %>%
+  select(year, conference, district, meeting, members_total) %>%
+  filter(year == 1825) %>%
+  group_by(district) %>%
+  top_n(1, members_total)
 
 ```
 
 (@) For each year, what was the biggest church in the Baltimore conference?
 
 ```{r}
-
+methodists %>%
+  select(year, conference, meeting, members_total) %>%
+  filter(conference == "Baltimore") %>%
+  group_by(year) %>%
+  top_n(1, members_total)
 ```
 
 ## Summarizing or aggregating data (`summarize()`)
@@ -187,12 +220,19 @@ methodists %>%
 (@) How many meetings were there in each conference in each year since 1802?
 
 ```{r}
-
+methodists %>%
+  filter(year >= 1802) %>%
+  group_by(year, conference) %>%
+  summarize(total_meetings = n())
 ```
 
 (@) What is the average number of white, black, Indian and total members for each year since 1786?
 
 ```{r}
+methodists %>%
+  filter(year >= 1786) %>%
+  group_by(year) %>%
+  summarise(avg_white = mean(members_white), avg_black = mean(members_black), avg_indian = mean(members_indian), avg_total = mean(members_total))
 
 ```
 
