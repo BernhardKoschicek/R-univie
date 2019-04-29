@@ -1,6 +1,11 @@
 ---
 title: "More data manipulation with dplyr and tidy"
-author: ""
+output:
+  pdf_document: default
+  df_print: paged
+  html_document:
+  word_document: default
+author: Bernhard Koschicek
 ---
 
 **NB:** The worksheet has beed developed and prepared by Lincoln Mullen. Source: Lincoln A. Mullen, *Computational Historical Thinking: With Applications in R (2018–)*: <http://dh-r.lincolnmullen.com>.

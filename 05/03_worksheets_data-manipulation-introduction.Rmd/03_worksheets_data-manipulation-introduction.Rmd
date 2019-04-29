@@ -8,7 +8,7 @@ output:
 author: Bernhard Koschicek
 ---
 
-**NB:** The worksheet has beed developed and prepared by Lincoln Mullen. Source: Lincoln A. Mullen, *Computational Historical Thinking: With Applications in R (2018–)*: <http://dh-r.lincolnmullen.com>.
+**NB:** The worksheet has beed developed and prepared by Lincoln Mullen. Source: Lincoln A. Mullen, *Computational Historical Thinking: With Applications in R (2018)*: <http://dh-r.lincolnmullen.com>.
 
 The best way to learn R or computational history is to practice. These worksheets contain a series of questions designed to teach you about R or different computational methods. The worksheets are R Markdown documents that include text and code together. The places where you are expected to answer questions are marked like this.
 
@@ -37,7 +37,7 @@ load(file = "C:/Users/bkoschicek/Dropbox/Geschichte Studium/3_Sem/R-repo/05/meth
 
 The first data manipulation verb that we are going to use is `select()`. This function lets us pass the names of the columns that we want to keep. 
 
-```{r}
+```{r, results="hide"}
 methodists %>% 
   select(year, meeting, members_total)
 ```
@@ -48,21 +48,22 @@ Read the documentation for this function, `?select`.
 
 (@) Select the columns for `year`, `meeting`, as well as all columns that begin with the word `members_`.
 
-```{r}
+```{r, results="hide"}
 select(methodists, year,meeting, members_total)
 ```
 
 (@) Remove the column `url`.
 
-```{r}
-
+```{r, results="hide"}
+methodists %>%
+  select(-url)
 ```
 
 ## Filtering rows (`filter()`)
 
 The `select()` function lets us pick certain columns. The `filter()` function lets select certain rows based on logical conditions. For example, here we get the only the meetings where the total number of members is at greater than 1,000.
 
-```{r}
+```{r, results="hide"}
 methodists %>% 
   filter(members_total > 1000)
 ```
@@ -83,7 +84,7 @@ methodists %>% filter(members_white == 0, members_black > 0 )
 
 Very often one will want to create a new column based on other columns in the data. For instance, in our Methodist data, there is a column called `year`, but that column represents the year that the minutes were reported. The membership figures are actually for the previous year. Here we create a new column called `year_recorded`, where each value is one less than in `year`.
 
-```{r}
+```{r, results="hide"}
 methodists %>% 
   mutate(year_recorded = year - 1) %>% 
   select(year, year_recorded, meeting)
@@ -93,7 +94,7 @@ Notice that we chained the data manipulation functions using the pipe (`%>%`). T
 
 (@) Create two new columns, one with the percentage of white members, and one with the percentage of black members.
 
-```{r}
+```{r, results="hide"}
 methodists %>%
   mutate(percentage_white =  members_white / members_total * 100) %>%
   mutate(percentage_black = members_black / members_total * 100) %>%
@@ -105,14 +106,14 @@ methodists %>%
 
 Often we want to sort a data frame by one of its columns. This can be done with the verb `arrange()`. By default `arrange()` will sort from least to greatest; we can use the function `desc()` to sort from greatest to least. In this example, we sort the data frame to get the meetings with the highest number of white members.
 
-```{r}
+```{r, results="hide"}
 methodists %>% 
   arrange(desc(members_white))
 ```
 
 (@) Which meetings had the highest number of black members? Select only the necessary columns so that the results print in a meaningful way.
 
-```{r}
+```{r, results="hide"}
 methodists %>%
   arrange(desc(members_black)) %>%
   select(year, state, meeting, members_black)
@@ -121,7 +122,7 @@ methodists %>%
 
 (@) Which meetings had the high percentage of black members without being entirely black?
 
-```{r}
+```{r, results="hide"}
 methodists %>%
   mutate(percentage_black = members_black / members_total * 100) %>%
   filter(percentage_black < 100) %>%
@@ -219,7 +220,7 @@ methodists %>%
 
 (@) How many meetings were there in each conference in each year since 1802?
 
-```{r}
+```{r, results="hide"}
 methodists %>%
   filter(year >= 1802) %>%
   group_by(year, conference) %>%
