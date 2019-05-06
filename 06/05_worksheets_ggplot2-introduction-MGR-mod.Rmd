@@ -296,7 +296,10 @@ You may wish to look at Jenny Bryan's [R Graph Catalog](http://shiny.stat.ubc.ca
 (@) Plot 1
 
 ```{r}
-
+library(europop) 
+data("europop")
+head(europop)
+summary(europop)
 ```
 
 > Explanation of plot 1.
