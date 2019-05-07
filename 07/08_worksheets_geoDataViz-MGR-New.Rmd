@@ -1,0 +1,368 @@
+---
+title: "Visualizing Geographical Data"
+author: "Bernhard Koschicek"
+---
+
+**NB:** The worksheet has beed developed and prepared by Maxim Romanov for the course "R for Historical Research" (U Vienna, Spring 2019)
+
+## Necessarey libraries
+
+We will need some new libraries that are developed for working with maps. You may want to install those libraries outside of the notebook, so that it does not try to reinstall them everytime you `knit` it.
+
+```{r}
+#install.packages(c("cowplot", "googleway", "ggplot2", "ggrepel", "ggspatial", "libwgeom", "sf", "rnaturalearth", "rnaturalearthdata", "rnaturalearthhires", "rgeos"))
+```
+
+
+```{r}
+library("ggplot2")
+theme_set(theme_bw())
+library("sf")
+
+```
+
+The libraries below have the necessary geographical data, so let's load them and create a working variable.
+
+```{r}
+library("rnaturalearth")
+library("rnaturalearthdata")
+
+#world <- ne_countries(scale = "large", returnclass = "sf")
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+Now we can create our first and simple map with just a couple of lines of code. See how easy it is.
+
+```{r}
+ggplot(data = world) +
+    geom_sf()
+
+```
+
+We can add additional information to our map to make it more informative. Look at the `ggtitle()`: we can combine necessary numbers with textual annotations.
+
+```{r}
+ggplot(data = world) +
+    geom_sf() +
+    xlab("Longitude") + ylab("Latitude") +
+    ggtitle("World map", subtitle = paste0("(", length(unique(world$name)), " countries)"))
+
+```
+
+`Color` and `fill` determine the colors of "borders" and "areas" within. 
+
+```{r}
+ggplot(data = world) + 
+    geom_sf(color = "grey", fill = "grey")
+
+```
+
+Since we have some demographic data, we can visualize it with colors. You can `google` other color scales.
+
+```{r}
+ggplot(data = world) +
+    geom_sf(aes(fill = pop_est)) +
+    scale_fill_viridis_c(option = "magma", trans = "sqrt")
+
+```
+
+We can also select a projection like shown in the code below. For more details, check references given below.
+
+```{r}
+ggplot(data = world) +
+    geom_sf(color = "grey", fill = "grey") +
+    coord_sf(crs = st_crs(3035))
+```
+
+We can focus our map on a specific area of the globe.
+
+```{r}
+
+xlim=c(-12,55); ylim=c(20,60)
+
+ggplot(data = world) +
+    geom_sf(color="grey", fill="grey") +
+    coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)
+
+```
+
+And add a scale and a North arrow, to make it look a bit cooler.
+
+```{r message=FALSE}
+library("ggspatial")
+
+xlim=c(-12,40); ylim=c(30,60)
+ggplot(data = world) +
+    geom_sf(fill="grey60", color="grey60") +
+    annotation_scale(location = "br", width_hint = 0.25) +
+    annotation_north_arrow(location = "tr", which_north = "true", 
+        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
+        style = north_arrow_fancy_orienteering) +
+    coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
+    theme(panel.grid.major = element_line(color = gray(.1), linetype = "dotted", size = 0.5), panel.background = element_rect(fill = "grey90"))
+
+```
+
+## Data
+
+Let's get some data first. The data comes from: <http://atlantides.org/downloads/pleiades/dumps/>. Can you find the description of data? (If description is already available it may make it easier for you to figure out what can be done with it.)
+
+```{r message=TRUE}
+
+#data_link <- "http://atlantides.org/downloads/pleiades/dumps/pleiades-locations-latest.csv.gz"
+#download.file(data_link,"pleiades-locations-latest.csv.gz")
+locsRaw <- read.csv(gzfile("pleiades-locations-latest.csv.gz"),stringsAsFactors=F,header=T,sep=',')
+locsRaw
+
+```
+
+The data contains *geolocations*, which are also categorized chronologically, The chronology is rather tricky: there are several main periods, but they are not used discretionally as many places often exist in multiple periods. These look as follows:
+
+* `archaic` (750-550BC)
+* `classical` (550-330BC)
+* `hellenistic-republican` (330-30BC)
+* `roman` (30BC-300CE)
+* `late-antique` (300-640CE)
+
+You can also try to split this data into other periods based on the `minDate` and `maxDate`, but that is a bit more complicated.
+
+Let's try to add it to our base map.
+
+```{r message=FALSE, warning=FALSE}
+
+xlim <- c(-12,55); ylim=c(20,60)
+
+plot <- ggplot(data = world) +
+    geom_sf(fill="grey70", color="grey70") +
+    geom_point(data=locsRaw,color="red",alpha=.1,size=.5,aes(y=reprLat,x=reprLong)) +
+    annotation_scale(location = "br", width_hint = 0.25) +
+    annotation_north_arrow(location = "trr", which_north = "true", 
+        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
+        style = north_arrow_fancy_orienteering) +
+    coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
+    theme(panel.grid.major = element_line(color = gray(.1), linetype = "dotted", size = 0.5),
+          panel.background = element_rect(fill = "grey90")) +
+    xlab("Longitude") + ylab("Latitude") +
+    ggtitle("Data from Pleiades", subtitle = "Density of Geographical Information")
+
+plot
+```
+
+Let's check what is in the data (always try to find the official description of data!).
+
+```{r}
+summary(locsRaw)
+```
+
+We check what types of things are mappable. In this dataset, types of objects are described in the `featureType` column.
+
+```{r}
+
+```
+
+You can use this line of code to check what kind of information is stored in other columns.
+
+Now we can select some specific feature we are interested in and add this data to our cartogram. As you can see, however, the data is quite messy and makes things rather difficult. So, for filtering our data it is best to use `regular expressions` like shown below. You can use `nrow()` to count how many of those items are in the data—mapping some low frequency objects may not be very informative.
+
+```{r}
+locs=locsRaw[ with(locsRaw, grepl("\\bfort\\b",featureType)),]
+nrow(locs)
+```
+
+We now can add anther layer of some specific data. Let's try *forts*, which we have just created above.
+
+```{r message=FALSE, warning=FALSE}
+
+xlim=c(-12,55); ylim=c(20,60)
+
+ggplot(data = world) +
+    geom_sf(fill="grey70", color="grey70") +
+    geom_point(data=locsRaw,color="grey20",alpha=.1,size=.1,aes(y=reprLat,x=reprLong)) +
+    geom_point(data=locs,color="red",alpha=.75,size=.5,aes(y=reprLat,x=reprLong)) +
+    annotation_scale(location = "br", width_hint = 0.25) +
+    annotation_north_arrow(location = "br", which_north = "true", 
+        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
+        style = north_arrow_fancy_orienteering) +
+    coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
+    theme(panel.grid.major = element_line(color = gray(.1), linetype = "dotted", size = 0.5),
+          panel.background = element_rect(fill = "grey90")) +
+    xlab("") + ylab("") +
+    ggtitle("Forts from Pleiades", subtitle = "Density of Geographical Information")
+
+```
+
+Let's check whether there are/were any forts on the territory of modern-day Austria.
+
+```{r warning=FALSE}
+austria <- subset(world, admin == "Austria")
+
+ourPlot <- ggplot(data = austria) +
+    geom_sf(fill="grey70", color="grey50") +
+    geom_point(data=locsRaw,color="grey20",alpha=.25,size=.15,aes(y=reprLat,x=reprLong)) +
+    geom_point(data=locs,color="red",alpha=.75,size=1,aes(y=reprLat,x=reprLong)) +
+    geom_point(color="black",alpha=1,shape=1, size=3,aes(y=48.210033,x=16.363449)) +
+    geom_text(x=16.363449+.5, y=48.210033+.1, label="vienna", color="black", size=4) +
+    coord_sf(xlim = c(6,17.5), ylim = c(46,55), expand = FALSE) +
+    theme(panel.grid.major = element_line(color = gray(.1), linetype = "dotted", size = 0.5),
+          panel.background = element_rect(fill = "grey90")) +
+    xlab("Longitude") + ylab("Latitude") +
+    annotation_scale(location = "bl", width_hint = 0.25) +
+    annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
+        style = north_arrow_fancy_orienteering) +
+    #xlab("") + ylab("") +
+    ggtitle("Ancient and Early Medieval Forts", subtitle = "Zooming on Modern Austria")
+
+ourPlot
+
+ggsave(file="forts_in_austria.png",plot=ourPlot,dpi=300,width=7,height=5)
+
+```
+
+By the way, we can store the plot into a variable and then reuse it. This is convenient for saving: we can use `ggsave()`—as shown above—to save our plot into a separate image. Check the folder with your R Notebook—there should be a file called `forts_in_austria.png`. There is a variety of parameters that you can adjust to get the exact quality of your image that you need. Check `?ggsave` for more details (or `google` it).
+
+Now, let's do some exercises.
+
+(@) Can you check which historical period those forts belong to? Do not forget to change the legend of your map accordingly. (*Hint:* check the note on historical periods above).
+
+* `archaic` (750-550BC)
+* `classical` (550-330BC)
+* `hellenistic-republican` (330-30BC)
+* `roman` (30BC-300CE)
+* `late-antique` (300-640CE)
+```{r}
+xlim=c(7.5,17.5); ylim=c(46,50)
+periods=rbind(
+  c("archaic","750-550BC"),
+  c("classical","550-330BC"),
+  c("hellenistic-republican","330-30BC"),
+  c("roman","30BC-300CE"),
+  c("late-antique","300-640CE")
+  )
+
+austria <- subset(world, admin == "Austria")
+
+locs=locsRaw[ with(locsRaw, grepl("\\bfort\\b",featureType)),]
+locsPer=locs[ with(locs, grepl("\\broman\\b", timePeriodsKeys)),]
+locsPer
+
+
+ourPlot <- ggplot(data = austria) +
+    geom_sf(fill="grey70", color="grey50") +
+    geom_point(data=locsRaw,color="grey20",alpha=.25,size=.15,aes(y=reprLat,x=reprLong)) +
+    geom_point(data=locsPer,color="red",alpha=.75,size=1,aes(y=reprLat,x=reprLong)) +
+    geom_point(color="black",alpha=1,shape=1, size=3,aes(y=48.210033,x=16.363449)) +
+    geom_text(x=16.363449+.5, y=48.210033+.1, label="vienna", color="black", size=4) +
+    coord_sf(xlim = c(7.5,17.5), ylim = c(46,50), expand = FALSE) +
+    theme(panel.grid.major = element_line(color = gray(.1), linetype = "dotted", size = 0.5),
+          panel.background = element_rect(fill = "grey90")) +
+    xlab("Longitude") + ylab("Latitude") +
+    annotation_scale(location = "bl", width_hint = 0.25) +
+    annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
+        style = north_arrow_fancy_orienteering) +
+    #xlab("") + ylab("") +
+    ggtitle("Ancient and Early Medieval Forts", subtitle = "Zooming on Modern Austria")
+
+ourPlot
+
+```
+
+
+(@) Can you create the map of (Hadrian's Wall)[https://en.wikipedia.org/wiki/Hadrian's_Wall]? Try to make the map as informative as possible (you can use a map from Wikipedia as a model).
+
+```{r}
+
+# Getting the Hadrians Wall Feature. 
+# I narrowed the sample size to the long over 4 and lat over 55 and most objects in this area were "unkown". I tested unkown and the Hadrians wall appeared:
+testLat <- subset(locsRaw, reprLat > 55)
+testLong <- subset(testLat, reprLong > 4)
+testLong
+
+unique(locsRaw$featureType)
+
+hadrian <- subset(world, admin == "United Kingdom")
+world <- subset(world)
+locsRaw
+locsTower=locsRaw[ with(locsRaw, grepl("\\bunknown\\b",featureType)),]
+locsTower
+locsFort=locsRaw[ with(locsRaw, grepl("\\bfort\\b", featureType)),]
+locsFort
+
+
+
+```
+
+```{r}
+locColors <- c("Forts" = "red", "Hadrians Wall" = "green")
+
+hadrianPlot <- ggplot(data = world) +
+    geom_sf(fill="grey70", color="grey50") +
+    geom_sf(data = hadrian, fill="grey50", color="grey30") +
+    geom_point(data=locsTower,color="green",alpha=.25,size=.15,aes(y=reprLat,x=reprLong)) +
+    geom_point(data=locsFort,color="red",alpha=.75,size=.30,aes(y=reprLat,x=reprLong)) +
+    geom_point(color="black",alpha=1,shape=1, size=3,aes(y=48.210033,x=16.363449)) +
+    geom_text(x=16.363449+.5, y=48.210033+.1, label="vienna", color="black", size=4) +
+    coord_sf(xlim = c(-10,2), ylim = c(50,60), expand = FALSE) +
+    theme(panel.grid.major = element_line(color = gray(.1), linetype = "dotted", size = 0.5),
+          panel.background = element_rect(fill = "grey90")) +
+    xlab("Longitude") + ylab("Latitude") +
+    annotation_scale(location = "bl", width_hint = 0.25) +
+    annotation_north_arrow(location = "tr", which_north = "true", 
+        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
+        style = north_arrow_fancy_orienteering) +
+    #xlab("") + ylab("") +
+    ggtitle("Hadrians Wall and its forts", subtitle = "") +
+    scale_fill_manual(values = c('red', 'green'), labels = c('Forts', 'Hadrians Wall'))
+
+hadrianPlot
+
+ggsave(file="hadrians_wall.png",plot=hadrianPlot,dpi=300,width=7,height=5)
+
+```
+
+(@) Explore Pleiades dataset and create three maps of something interesting that you discover.
+
+(@) Plot 1: *add some explanations here* (but also do not forget to add all necessary information into the map/cartogram).
+
+```{r}
+
+```
+
+(@) Plot 2: *add some explanations here* (but also do not forget to add all necessary information into the map/cartogram).
+
+```{r}
+
+```
+
+(@) Plot 3: *add some explanations here* (but also do not forget to add all necessary information into the map/cartogram).
+
+```{r}
+
+```
+
+
+## `Europop` package
+
+The `europop` package has information on population of european cities, which we can now map. There are two main tables:  `europop`—with the historical populations of European cities, and `city_coords`—with the latitudes and longitudes of those cities. With this new data you now should be able to map European cities. Your task is as follows:
+
+* create maps of 5 different periods (i.e., 5 maps)
+* colorcode your map by regions
+* add the names of the top 10 largest cities to your maps
+* add relevant legends to your maps
+* you may need to adjust your legend (`google` it!) 
+
+```{r}
+library(tidyverse)
+library(europop) #install.packages("europop")
+  
+# add your code after this line...
+
+```
+
+# References
+
+* Mel Moreno, Mathieu Basille. *Drawing beautiful maps programmatically with R, sf and ggplot2 — Part 1: Basics*, October 25, 2018, <https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html>.
+* Robin Lovelace, Jakub Nowosad, Jannes Muenchow. *Geocomputation with R*, April 24, 2019, <https://geocompr.robinlovelace.net/>, *In particular, check:* Making maps in R, <https://geocompr.robinlovelace.net/adv-map.html>.
+* *R Graph Gallery: Maps*, <https://www.r-graph-gallery.com/map/>.
+* James Cheshire, *Spatial.ly*, 2016, <http://spatial.ly/r/>.

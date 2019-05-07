@@ -192,7 +192,8 @@ ggplot(paulists_by_year, aes(x = year, y = confessions)) +
 ```{r}
 ggplot(paulists_by_year, aes(x = year)) +
   geom_line(aes(y = converts)) +
-  geom_line(aes(y = confessions))
+  geom_line(aes(y = confessions)) +
+  scale_y_continuous(trans='log10')
 ```
 
 (@) Can you create a plot with a single line for the ratio of converts to confessions? (Hint: the ratio of converts to confessions is given by `converts / confessions`.)
@@ -298,8 +299,15 @@ You may wish to look at Jenny Bryan's [R Graph Catalog](http://shiny.stat.ubc.ca
 ```{r}
 library(europop) 
 data("europop")
-head(europop)
-summary(europop)
+
+pop_plot <- europop %>%
+  group_by(year, region) %>%
+  summarise(sum_pop = sum(population, na.rm = TRUE))
+
+ggplot(pop_plot) +
+  geom_col(aes(x = year, y = sum_pop, color = year)) +
+  facet_wrap(~ region)
+
 ```
 
 > Explanation of plot 1.
